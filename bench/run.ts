@@ -33,6 +33,8 @@ const REQUEST_TIMEOUT_MS = 120_000
 const LATENCY_TARGET_MS = 1000
 /** A streaming model's words for an utterance are those arriving before the next one starts, at most this long after it ends. */
 const STREAM_SETTLE_SECONDS = 5
+/** Thinking off for every model that has it, as in Toolbench: transcripts have to arrive at once. */
+const THINKING_OFF = ['--reasoning', 'off']
 const ENGINE_EXECUTABLES = new Set(['llama-server', 'crispasr', 'local-ai'])
 
 interface UtteranceResult extends Utterance {
@@ -185,7 +187,7 @@ async function launch(model: VoiceModel, logPath: string): Promise<{ server: Run
     }
     const modelPath = join(LLAMA_MODELS, engine.directory, engine.model)
     const projectorPath = join(LLAMA_MODELS, engine.directory, engine.projector)
-    return { server: await startServer(modelPath, projectorPath, logPath), files: [modelPath, projectorPath] }
+    return { server: await startServer(modelPath, projectorPath, logPath, THINKING_OFF), files: [modelPath, projectorPath] }
 }
 
 /** The model's files on disk, for estimating time left (bigger models take longer). */
@@ -363,7 +365,7 @@ async function runDetails(recordings: Recording[]): Promise<Record<string, unkno
             ),
         },
         method: {
-            settings: 'Each engine with its defaults; the only arguments are the model files and a port. CrispASR also gets --auto-download, so it may fetch helper files its defaults use.',
+            settings: 'Each engine with its defaults, except thinking: models on llama-server run with thinking off (--reasoning off), the same as in Toolbench. The only other arguments are the model files and a port. CrispASR also gets --auto-download, so it may fetch helper files its defaults use; CrispASR and the Python runner have no thinking to turn off.',
             wholeUtteranceModels: 'Each utterance sent alone to POST /v1/audio/transcriptions as soon as it ends; latency is the request time. One utterance is sent untimed first to warm the model up.',
             streamingModels: `Each recording played into /v1/realtime at real speed in ${BLOCK_SECONDS * 1000} ms blocks; an utterance's words are those arriving before the next utterance starts (at most ${STREAM_SETTLE_SECONDS} s after it ends); latency is from its end to its last word.`,
             score: 'A 0–100 score from fixed scales, so it doesn\'t change when other models are added: accuracy (60%: 15% word errors scores 0, 2% scores 100), typical wait (25%: 1.5 s scores 0, 50 ms scores 100) and slow wait, the slowest 1 in 10 (15%: 3 s scores 0, 150 ms scores 100), each on a log scale so every halving counts the same.',
