@@ -35,6 +35,5 @@
             "destination": "/voicebench/",
             "permanent": false
         }
-    ],
-    "trailingSlash": true
+    ]
 }
