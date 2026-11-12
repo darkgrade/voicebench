@@ -1,12 +1,14 @@
 node_modules/
 dist/
+.server/
 .DS_Store
-# Participants' audio stays out of git until each speaker agrees to publish it.
-recordings/*.wav
-recordings/*.m4a
-recordings/*.mp3
-recordings/*.aac
-recordings/*.caf
+# recordings/ holds only what bench/anonymity.ts allows. Anything else dropped in (a volunteer's original
+# file, in any format) stays out of git until `bun run publish` scrubs it into speaker-NN.wav.
+recordings/*
+!recordings/speakers.json
+!recordings/reviewed-speech.json
+!recordings/speaker-[0-9][0-9].wav
+!recordings/speaker-[0-9][0-9].utterances.json
+!recordings/.gitkeep
 # Full model output and engine logs: rewritten every run.
 results/raw/
-.server/

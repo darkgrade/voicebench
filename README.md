@@ -33,8 +33,7 @@ Volunteers stay anonymous, and a check enforces it before every commit and push 
 history). Anything it doesn't explicitly allow fails:
 
 - **Recordings** are rewritten as bare WAVs with no tags, so the phone's model, OS, recording ID, creation
-  time and location never enter the repo. Originals are never copied. Audio is published only for
-  speakers who agreed to it.
+  time and location never enter the repo. Originals are never copied.
 - **Nothing about the person**: speakers are only `speaker-01`, `speaker-02` …, with no age, accent,
   region, device or anything else.
 - **Speech**: words a speaker said that aren't in the script (a name, a place) block the commit until
@@ -42,21 +41,20 @@ history). Anything it doesn't explicitly allow fails:
 - **Commits** that carry participant data are made as "Voicebench" at midnight UTC, so they show no name,
   email, time of day or timezone. Commit messages may not contain emails, phone numbers or links.
 
-### Adding a recording
+### Publishing recordings
+
+Drop volunteers' files into `recordings/` as they arrive (any format: M4A, CAF, MP3, WAV). Being in that
+folder means the speaker agreed to take part and to their audio being published. Then:
 
 ```sh
-bun install                                              # once: switches on the checks
-bun run recordings:add -- ~/Downloads/recording.m4a
-# add --publish only if the speaker agreed to their audio being published
-bun run bench                                            # transcribe it with every model
-git add recordings results                               # audio is only added with --publish: git add -f recordings/speaker-NN.wav
-bun run recordings:commit -- "Add a recording"           # never plain `git commit` for these
-git push
+bun install       # once: switches on the checks
+bun run publish
 ```
 
-Then delete the original file. If a check fails, fix what it names. Don't bypass it with `--no-verify`:
-once something identifying is pushed, it can't be taken back. Add recordings only from a Mac with the
-checks on, never through GitHub's web upload.
+That scrubs each file into the next `speaker-NN.wav`, moves the original to the Trash, runs every model,
+checks everything, commits as "Voicebench" and pushes. If a check fails, nothing is committed: fix what it
+names. Don't bypass the checks with `--no-verify`, and add recordings only from a Mac with the checks on,
+never through GitHub's web upload. Once something identifying is pushed, it can't be taken back.
 
 ## Run locally
 

@@ -5,7 +5,7 @@
  */
 import { RUNNERS_DIRECTORY } from '@bench/models'
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 export const ROOT = resolve(import.meta.dirname, '..')
@@ -16,7 +16,7 @@ const UTTERANCE_FINDER = join(ROOT, 'bench', 'runners', 'find_utterances.py')
 export const SAMPLE_RATE = 16_000
 export const BYTES_PER_SECOND = SAMPLE_RATE * 2
 
-/** A participant: only a number, their file and whether their audio may be published. */
+/** A participant: only a number and their file. Being in recordings/ means they agreed to publish. */
 export interface Speaker {
     id: string
     /** File name in recordings/, e.g. speaker-01.m4a. */
@@ -76,4 +76,36 @@ export function loadRecordings(): Recording[] {
         const utterancesPath = join(RECORDINGS_DIRECTORY, `${speaker.id}.utterances.json`)
         return { speaker, path, pcm: decode(path), utterances: findUtterances(path, utterancesPath), utterancesPath }
     })
+}
+
+/** Names that belong in recordings/; anything else there is a new recording waiting to be added. */
+const KNOWN = /^(speakers\.json|reviewed-speech\.json|\.gitkeep|speaker-\d{2}\.wav|speaker-\d{2}\.utterances\.json)$/
+
+/** Files dropped into recordings/ that haven't been added yet, oldest first. */
+export function newRecordings(): string[] {
+    return readdirSync(RECORDINGS_DIRECTORY)
+        .filter(name => !KNOWN.test(name) && !name.startsWith('.'))
+        .map(name => join(RECORDINGS_DIRECTORY, name))
+        .sort((first, second) => statSync(first).mtimeMs - statSync(second).mtimeMs)
+}
+
+/**
+ * Adds one recording as the next speaker. The audio is decoded and rewritten as a bare 16-bit mono WAV
+ * (first audio stream only; every tag, chapter and other stream dropped; written bit-exact so not even
+ * the encoder's name is added), so nothing about the phone, its owner, the time or place comes along.
+ * Works for any format the phone sent (M4A, CAF, MP3, WAV …). Returns the new speaker id.
+ */
+export function addRecording(original: string): string {
+    const speakersPath = join(RECORDINGS_DIRECTORY, 'speakers.json')
+    const speakers = existsSync(speakersPath) ? readSpeakers() : []
+    const id = `speaker-${String(speakers.length + 1).padStart(2, '0')}`
+    const file = `${id}.wav`
+    execFileSync('ffmpeg', [
+        '-v', 'error', '-y', '-i', original,
+        '-map', '0:a:0', '-map_metadata', '-1', '-map_chapters', '-1',
+        '-fflags', '+bitexact', '-flags:a', '+bitexact',
+        '-ac', '1', '-ar', String(SAMPLE_RATE), '-c:a', 'pcm_s16le', '-f', 'wav', join(RECORDINGS_DIRECTORY, file),
+    ])
+    writeFileSync(speakersPath, `${JSON.stringify([...speakers, { id, file, publishAudio: true }], null, 4)}\n`)
+    return id
 }

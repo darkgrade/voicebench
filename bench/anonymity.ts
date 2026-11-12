@@ -11,7 +11,7 @@
  *  - recordings/ holds only speakers.json, speaker-NN.utterances.json, reviewed-speech.json and
  *    speaker-NN.wav, by exact name. No other names, no other formats (an .m4a or .mp3 can carry
  *    location, device, owner and creation date in ways that can't be verified; use
- *    `bun run recordings:add`, which converts to a bare WAV).
+ *    `bun run publish`, which converts to a bare WAV).
  *  - A WAV is exactly RIFF/WAVE with a PCM "fmt " chunk and one "data" chunk, nothing before, between
  *    or after (no LIST/INFO, bext, iXML, ID3, XMP, cue, JUNK …), and is only committed for a speaker
  *    whose publishAudio is true.
@@ -23,7 +23,7 @@
  *  - Anywhere in the repo: no audio or video files outside recordings/, and no images carrying EXIF,
  *    XMP, GPS or text metadata.
  *  - Commits that touch recordings/ or results/ (on push and in CI): authored and committed as
- *    "Voicebench <noreply@darkgrade.com>" at midnight UTC (`bun run recordings:commit` does this), so
+ *    "Voicebench <noreply@darkgrade.com>" at midnight UTC (`bun run publish` does this), so
  *    no name, email, time of day or timezone can be matched to when a volunteer sent their file. Every
  *    pushed commit's message must hold no emails, phone numbers or links.
  * Git itself stores only paths, contents and the executable bit: Finder tags, "Where from", owners and
@@ -96,7 +96,7 @@ function checkWav(path: string, bytes: Buffer): Problem[] {
         const channels = bytes.readUInt16LE(format.offset + 10)
         const bits = bytes.readUInt16LE(format.offset + 22)
         if (format.size !== 16) problems.push(`${path}: fmt chunk has ${format.size - 16} extra bytes`)
-        if (audioFormat !== 1 || channels !== 1 || bits !== 16) problems.push(`${path}: must be 16-bit mono PCM (made by \`bun run recordings:add\`)`)
+        if (audioFormat !== 1 || channels !== 1 || bits !== 16) problems.push(`${path}: must be 16-bit mono PCM (made by \`bun run publish\`)`)
     }
     return problems
 }
@@ -257,8 +257,8 @@ function checkCommit(commit: string): Problem[] {
     const touched = git('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', commit).toString().split('\n').filter(Boolean)
     if (!touched.some(path => carriesParticipantData(commit, path))) return problems
     for (const [role, name, email, date] of [['author', authorName, authorEmail, authorDate], ['committer', committerName, committerEmail, committerDate]]) {
-        if (name !== NEUTRAL_NAME || email !== NEUTRAL_EMAIL) problems.push(`${label}: touches recordings/ or results/, so its ${role} must be "${NEUTRAL_NAME} <${NEUTRAL_EMAIL}>" (use \`bun run recordings:commit\`), not "${name} <${email}>"`)
-        if (date !== '00:00:00 +0000') problems.push(`${label}: touches recordings/ or results/, so its ${role} date must be midnight UTC (use \`bun run recordings:commit\`), not ${date}`)
+        if (name !== NEUTRAL_NAME || email !== NEUTRAL_EMAIL) problems.push(`${label}: touches recordings/ or results/, so its ${role} must be "${NEUTRAL_NAME} <${NEUTRAL_EMAIL}>" (use \`bun run publish\`), not "${name} <${email}>"`)
+        if (date !== '00:00:00 +0000') problems.push(`${label}: touches recordings/ or results/, so its ${role} date must be midnight UTC (use \`bun run publish\`), not ${date}`)
     }
     return problems
 }
