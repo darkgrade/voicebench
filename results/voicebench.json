@@ -1,5 +1,183 @@
 {
-    "benchmark": "voicebench",
-    "version": 1,
-    "models": []
+  "benchmark": "voicebench",
+  "date": "2026-11-12T10:25:45.566Z",
+  "engines": {
+    "crispasr": "unknown",
+    "harness": "bun 1.4.4",
+    "llamaServer": "version: 0.9.0-dev (build 12283, commit f3b407ca1)",
+    "python": {
+      "mlx": "0.32.2",
+      "mlx-audio": "0.5.3",
+      "qwen-asr": "0.0.6",
+      "silero-vad": "6.2.1",
+      "torch": "2.15.0",
+      "transformers": "5.19.0",
+      "transformers (Musci-ASR)": "4.57.6"
+    }
+  },
+  "hardware": {
+    "chip": "Apple M5 Max",
+    "cores": 18,
+    "macOS": "27.0.1 (26A434)",
+    "machine": "Mac17,14",
+    "memoryGigabytes": 36
+  },
+  "input": {
+    "endOfUtteranceSeconds": 0.5,
+    "script": "script/reading-script.md",
+    "scriptSha256": "6aefe06185dfbf3297652e026ad3f2b76e9d5d246067c05e5acc33fa08cc6980",
+    "speakers": [
+      {
+        "audioSeconds": 63.83,
+        "file": "speaker-01.wav",
+        "id": "speaker-01",
+        "publishAudio": true,
+        "recordingSha256": "28d018ac138b4da48b37029ebf251ee8d5ca848af4910fdcee60eb419997dc34",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 90.62,
+        "file": "speaker-02.wav",
+        "id": "speaker-02",
+        "publishAudio": true,
+        "recordingSha256": "661c62a6f2858d6fff2caeabd3cd6ec10afb09b8200d0cf31c536d25a677c1f2",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 70.66,
+        "file": "speaker-03.wav",
+        "id": "speaker-03",
+        "publishAudio": true,
+        "recordingSha256": "8afcf989a55cdcf400220c67e64cdb49b2390eecfdbcec22dc2e04b05696431a",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 82.96,
+        "file": "speaker-04.wav",
+        "id": "speaker-04",
+        "publishAudio": true,
+        "recordingSha256": "a965aea97fe3ad6a3346aa766b003286d893eecb2f022d19efeb5d019881eb41",
+        "utterances": 21
+      },
+      {
+        "audioSeconds": 65.19,
+        "file": "speaker-05.wav",
+        "id": "speaker-05",
+        "publishAudio": true,
+        "recordingSha256": "efdee08d87c9e65ee3b4f58ef877899100f43ed7041c9ec49eed925073f23132",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 76.03,
+        "file": "speaker-06.wav",
+        "id": "speaker-06",
+        "publishAudio": true,
+        "recordingSha256": "f94a1c9fa0a978af9627a94c49517edd8e505a503e945b4650013fc491a9e3e4",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 56.54,
+        "file": "speaker-07.wav",
+        "id": "speaker-07",
+        "publishAudio": true,
+        "recordingSha256": "648472da4294d6f933f7a32f2b10875bafbf8abd577e46ab6d57b5d6dea6947a",
+        "utterances": 17
+      },
+      {
+        "audioSeconds": 83.61,
+        "file": "speaker-08.wav",
+        "id": "speaker-08",
+        "publishAudio": true,
+        "recordingSha256": "13e975059a17a7d8e5bb3395a37b835f714f76d3a83ca4ba3eb134d99c1ee7ac",
+        "utterances": 20
+      }
+    ],
+    "utteranceDetector": "silero-vad 6.2.1"
+  },
+  "method": {
+    "accuracy": "Word and character error rate against the script, pooled over every speaker. Both sides are lower-cased, punctuation removed, contractions expanded, numbers written as digits and British spellings made American. Output markup (Qwen3-ASR language tags, VibeVoice speaker labels) is removed first. Speakers' own slips count against every model alike.",
+    "isolation": "One model at a time. The run refuses to start a model while any other engine process is alive, and confirms the model's server has exited before the next starts.",
+    "latencyTarget": "1000 ms from the end of an utterance to its final text.",
+    "runs": "One pass per model per recording.",
+    "score": "A 0–100 score from fixed scales, so it doesn't change when other models are added: accuracy (60%: 15% word errors scores 0, 2% scores 100), typical wait (25%: 1.5 s scores 0, 50 ms scores 100) and slow wait, the slowest 1 in 10 (15%: 3 s scores 0, 150 ms scores 100), each on a log scale so every halving counts the same.",
+    "settings": "Each engine with its defaults, except thinking: models on llama-server run with thinking off (--reasoning off), the same as in Toolbench. The only other arguments are the model files and a port. CrispASR also gets --auto-download, so it may fetch helper files its defaults use; CrispASR and the Python runner have no thinking to turn off.",
+    "streamingModels": "Each recording played into /v1/realtime at real speed in 80 ms blocks; an utterance's words are those arriving before the next utterance starts (at most 5 s after it ends); latency is from its end to its last word.",
+    "wholeUtteranceModels": "Each utterance sent alone to POST /v1/audio/transcriptions as soon as it ends; latency is the request time. One utterance is sent untimed first to warm the model up."
+  },
+  "version": 1,
+  "models": [
+    {
+      "bySpeaker": {
+        "speaker-01": 0.0058,
+        "speaker-02": 0,
+        "speaker-03": 0.0058,
+        "speaker-04": 0.0058,
+        "speaker-05": 0.0058,
+        "speaker-06": 0,
+        "speaker-07": 0.0291,
+        "speaker-08": 0.0233
+      },
+      "characterErrorRate": 0.0053,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 5,
+        "insertions": 2,
+        "referenceWords": 1376,
+        "substitutions": 6
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 417894912,
+          "name": "parakeet-tdt-0.6b-v3-q4_k.gguf",
+          "sha256": "addef407ab841eef45739e78920fd8c00e63f78eaa823c490e600e0ab58080a1"
+        }
+      ],
+      "id": "parakeet-tdt-0.6b-v3",
+      "latencyMaxMs": 266,
+      "latencyMedianMs": 65,
+      "latencyP90Ms": 85,
+      "licence": "CC-BY-4.0",
+      "loadSeconds": 3.4,
+      "maker": "NVIDIA",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "Parakeet TDT 0.6B v3",
+      "peakMemoryGigabytes": 0.7,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 60,
+          "score": 100,
+          "weight": 60,
+          "why": "0.9% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 23.1,
+          "score": 92,
+          "weight": 25,
+          "why": "0.07 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 15,
+          "score": 100,
+          "weight": 15,
+          "why": "0.09 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 98,
+      "sizeGigabytes": 0.42,
+      "source": "https://huggingface.co/cstr/parakeet-tdt-0.6b-v3-GGUF/resolve/main/parakeet-tdt-0.6b-v3-q4_k.gguf",
+      "strengths": [
+        "0.9% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 1,
+      "wordErrorRate": 0.0094
+    }
+  ]
 }
