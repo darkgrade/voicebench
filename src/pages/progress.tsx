@@ -28,8 +28,9 @@ const STATUS: Record<string, { label: string; variant: 'secondary' | 'outline' |
 
 type LiveProgress = ProgressFile & { alive?: boolean }
 
-function useProgress(): { progress: LiveProgress | null; now: number } {
-    const [progress, setProgress] = useState<LiveProgress | null>(null)
+/** undefined until the first answer arrives (so no button is offered before the run's state is known); null when there's no run. */
+function useProgress(): { progress: LiveProgress | null | undefined; now: number } {
+    const [progress, setProgress] = useState<LiveProgress | null | undefined>(undefined)
     const [now, setNow] = useState(Date.now())
     useEffect(() => {
         let active = true
@@ -93,6 +94,7 @@ function Controls({ progress }: { progress: LiveProgress | null }) {
 
 export function ProgressPage() {
     const { progress, now } = useProgress()
+    if (progress === undefined) return <div className="text-sm text-muted-foreground">Checking for a run…</div>
     if (!progress) {
         return (
             <Empty className="border">
@@ -108,6 +110,7 @@ export function ProgressPage() {
     const current = progress.current
     const currentModel = progress.models.find(model => model.id === current?.model)
     const running = Boolean(progress.alive)
+    const resultKeys = [...new Set(progress.models.flatMap(model => Object.keys(model.result ?? {})))]
     const left = running ? timeLeftMs(progress, now) : 0
     const title = running ? (progress.state === 'stopping' ? 'Stopping' : 'Running') : progress.state === 'finished' ? 'Finished' : progress.state === 'stopped' ? 'Stopped' : 'Interrupted'
     return (
@@ -151,56 +154,64 @@ export function ProgressPage() {
                 </Card>
             )}
 
-            <div className="grid gap-6 lg:grid-cols-2">
-                <section className="flex flex-col gap-2">
-                    <h2 className="font-heading text-lg font-semibold">Models</h2>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Model</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Result</TableHead>
-                                <TableHead className="text-right">Took</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {progress.models.map(model => (
-                                <TableRow key={model.id}>
-                                    <TableCell className="font-medium">{model.name}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={STATUS[model.status].variant}>{STATUS[model.status].label}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-sm whitespace-normal text-muted-foreground">
-                                        {model.error ??
-                                            Object.entries(model.result ?? {})
-                                                .map(([key, value]) => `${key} ${value}`)
-                                                .join(' · ')}
-                                    </TableCell>
-                                    <TableCell className="text-right tabular-nums">
-                                        {model.startedAt ? duration((model.finishedAt ?? now) - model.startedAt) : ''}
-                                    </TableCell>
-                                </TableRow>
+            <section className="flex flex-col gap-2">
+                <h2 className="font-heading text-lg font-semibold">Models</h2>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Model</TableHead>
+                            <TableHead>Status</TableHead>
+                            {resultKeys.map(key => (
+                                <TableHead key={key} className="text-right capitalize">
+                                    {key}
+                                </TableHead>
                             ))}
-                        </TableBody>
-                    </Table>
-                </section>
-                <section className="flex flex-col gap-2">
-                    <h2 className="font-heading text-lg font-semibold">Latest steps</h2>
-                    <div className="flex flex-col gap-1.5">
-                        {progress.recent.map(step => (
-                            <div key={`${step.at}-${step.label}`} className="flex items-start gap-2 text-sm">
-                                <span className={step.passed === false ? 'text-destructive' : step.passed ? 'text-foreground' : 'text-muted-foreground'}>
-                                    {step.passed === false ? '✗' : step.passed ? '✓' : '·'}
-                                </span>
-                                <div className="flex min-w-0 flex-col">
-                                    <span className="truncate">{step.label}</span>
-                                    {step.note && <span className={`truncate text-xs ${step.passed === false ? 'text-destructive' : 'text-muted-foreground'}`}>{step.note}</span>}
-                                </div>
-                            </div>
+                            <TableHead className="text-right">Took</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {progress.models.map(model => (
+                            <TableRow key={model.id}>
+                                <TableCell className="font-medium">{model.name}</TableCell>
+                                <TableCell>
+                                    <Badge variant={STATUS[model.status].variant}>{STATUS[model.status].label}</Badge>
+                                </TableCell>
+                                {model.error ? (
+                                    <TableCell colSpan={resultKeys.length} className="text-sm whitespace-normal text-destructive">
+                                        {model.error}
+                                    </TableCell>
+                                ) : (
+                                    resultKeys.map(key => (
+                                        <TableCell key={key} className="text-right tabular-nums">
+                                            {model.result?.[key] ?? ''}
+                                        </TableCell>
+                                    ))
+                                )}
+                                <TableCell className="text-right tabular-nums text-muted-foreground">
+                                    {model.startedAt ? duration((model.finishedAt ?? now) - model.startedAt) : ''}
+                                </TableCell>
+                            </TableRow>
                         ))}
-                    </div>
-                </section>
-            </div>
+                    </TableBody>
+                </Table>
+            </section>
+
+            <section className="flex flex-col gap-2">
+                <h2 className="font-heading text-lg font-semibold">Latest steps</h2>
+                <div className="flex flex-col gap-1.5">
+                    {progress.recent.map(step => (
+                        <div key={`${step.at}-${step.label}`} className="flex items-start gap-2 text-sm">
+                            <span className={step.passed === false ? 'text-destructive' : step.passed ? 'text-foreground' : 'text-muted-foreground'}>
+                                {step.passed === false ? '✗' : step.passed ? '✓' : '·'}
+                            </span>
+                            <div className="flex min-w-0 flex-col">
+                                <span className="truncate">{step.label}</span>
+                                {step.note && <span className={`truncate text-xs ${step.passed === false ? 'text-destructive' : 'text-muted-foreground'}`}>{step.note}</span>}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     )
 }
