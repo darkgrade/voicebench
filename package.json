@@ -1,0 +1,35 @@
+{
+    "name": "voicebench",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=24"
+    },
+    "scripts": {
+        "setup": "bun bench/setup.ts",
+        "bench": "bun bench/run.ts",
+        "dev": "vite",
+        "build": "tsc --noEmit && vite build && vite build --ssr src/server.tsx --outDir .server && bun scripts/prerender.ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@kevinschaich/components": "^0.8.0",
+        "lucide-react": "^1.72.0",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1"
+    },
+    "devDependencies": {
+        "@fontsource/public-sans": "^5.3.0",
+        "@resvg/resvg-js": "^2.6.2",
+        "@tailwindcss/vite": "^4.3.5",
+        "@types/bun": "^1.4.4",
+        "@types/node": "^26.6.6",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "@vitejs/plugin-react": "^6.3.0",
+        "satori": "^0.63.2",
+        "tailwindcss": "^4.3.5",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.8"
+    }
+}

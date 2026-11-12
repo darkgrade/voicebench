@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@kevinschaich/components/theme.css";
+@import "@kevinschaich/components/styles.css";
+@source "../node_modules/@kevinschaich/components/dist";

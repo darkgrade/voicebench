@@ -1,0 +1,173 @@
+/**
+ * The published results, bundled at build time: results/voicebench.json for the overview and
+ * results/models/<id>.json for each model's page. Every page is prerendered from these, so the site
+ * needs no server and search engines see the numbers.
+ */
+import results from '@results/voicebench.json'
+
+export const BENCH = {
+    name: 'Voicebench',
+    tagline: 'Which speech model hears real people best, and fastest?',
+    repository: 'darkgrade/voicebench',
+    /** Where the site is served; also Vite's base. */
+    path: '/voicebench/',
+    origin: 'https://darkgrade.com',
+}
+
+export interface ErrorCounts {
+    substitutions: number
+    deletions: number
+    insertions: number
+    referenceWords: number
+}
+
+export interface Reason {
+    area: string
+    weight: number
+    score: number
+    points: number
+    why: string
+}
+
+export interface ModelSummary {
+    id: string
+    /** 0–100, best 100 (see bench/voice-score.ts). */
+    score?: number | null
+    reasons?: Reason[]
+    strengths?: string[]
+    weaknesses?: string[]
+    name: string
+    maker: string
+    licence?: string
+    engine?: string
+    mode?: string
+    source?: string
+    files?: { name: string; bytes: number; sha256: string }[]
+    sizeGigabytes?: number
+    error?: string
+    wordErrorRate?: number
+    characterErrorRate?: number
+    errors?: ErrorCounts
+    bySpeaker?: Record<string, number>
+    latencyMedianMs?: number | null
+    latencyP90Ms?: number | null
+    latencyMaxMs?: number | null
+    withinTarget?: number
+    utterancesWithoutText?: number
+    loadSeconds?: number
+    peakMemoryGigabytes?: number
+}
+
+export interface Speaker {
+    id: string
+    ageRange?: string
+    accent?: string
+    device?: string
+    audioSeconds?: number
+}
+
+export interface RunDetails {
+    date?: string
+    hardware?: { machine?: string; chip?: string; memoryGigabytes?: number; macOS?: string }
+    engines?: Record<string, unknown>
+    input?: { speakers?: Speaker[]; utteranceDetector?: string; endOfUtteranceSeconds?: number }
+    method?: Record<string, string>
+    models: ModelSummary[]
+}
+
+export type AlignedWord =
+    | { kind: 'same' | 'substituted'; expected: string; heard: string }
+    | { kind: 'missed'; expected: string }
+    | { kind: 'added'; heard: string }
+
+export interface ModelDetail {
+    id: string
+    speakers: {
+        speaker: string
+        wordErrorRate: number
+        errors: ErrorCounts
+        alignment: AlignedWord[]
+        utterances: { startSeconds: number; endSeconds: number; text: string; latencyMs: number | null }[]
+    }[]
+}
+
+export const RUN = results as RunDetails
+export const MODELS = RUN.models.filter(model => !model.error && model.wordErrorRate !== undefined)
+
+const details = import.meta.glob<ModelDetail>('../results/models/*.json', { eager: true, import: 'default' })
+export function modelDetail(id: string): ModelDetail | undefined {
+    return details[`../results/models/${id}.json`]
+}
+
+/** The categories the overview filters by, each a one-of-a-few choice. */
+export const FILTERS: { id: string; label: string; options: { id: string; label: string; matches: (model: ModelSummary) => boolean }[] }[] = [
+    {
+        id: 'size',
+        label: 'Size',
+        options: [
+            { id: 'all', label: 'Any size', matches: () => true },
+            { id: 'small', label: 'Small', matches: model => (model.sizeGigabytes ?? Infinity) < 1 },
+            { id: 'medium', label: 'Medium', matches: model => (model.sizeGigabytes ?? 0) >= 1 && (model.sizeGigabytes ?? 0) < 3 },
+            { id: 'large', label: 'Large', matches: model => (model.sizeGigabytes ?? 0) >= 3 },
+        ],
+    },
+    {
+        id: 'mode',
+        label: 'How it listens',
+        options: [
+            { id: 'all', label: 'Either', matches: () => true },
+            { id: 'streaming', label: 'Streaming', matches: model => model.mode === 'streaming' },
+            { id: 'line', label: 'Line by line', matches: model => model.mode !== 'streaming' },
+        ],
+    },
+    {
+        id: 'licence',
+        label: 'Licence',
+        options: [
+            { id: 'all', label: 'Any licence', matches: () => true },
+            { id: 'commercial', label: 'Commercial use', matches: model => !model.licence?.includes('NC') },
+        ],
+    },
+]
+
+export const percent = (value: number | null | undefined, places = 1): string => (value === null || value === undefined ? '–' : `${(value * 100).toFixed(places)}%`)
+export const seconds = (milliseconds: number | null | undefined): string => (milliseconds === null || milliseconds === undefined ? '–' : `${(milliseconds / 1000).toFixed(2)} s`)
+
+/** Every page the site has, with what its title, description and preview card say. */
+export interface Route {
+    path: string
+    title: string
+    description: string
+    card: { eyebrow: string; heading: string; stats: { label: string; value: string }[] }
+}
+
+export function routes(): Route[] {
+    const best = MODELS[0]
+    const overview: Route = {
+        path: '',
+        title: `${BENCH.name} | Darkgrade`,
+        description: BENCH.tagline,
+        card: {
+            eyebrow: 'Voicebench by Darkgrade',
+            heading: BENCH.tagline,
+            stats: best ? [{ label: 'Top model', value: best.name }, { label: 'Score', value: String(best.score ?? '–') }] : [],
+        },
+    }
+    const models = MODELS.map(
+        (model): Route => ({
+            path: `${model.id}/`,
+            title: `${model.name} speech recognition benchmark | ${BENCH.name} by Darkgrade`,
+            description: `${model.name} by ${model.maker} scores ${model.score ?? '–'}/100 at transcribing real people: ${percent(model.wordErrorRate)} word errors, ${seconds(model.latencyMedianMs)} typical wait.`,
+            card: {
+                eyebrow: `Voicebench · ${model.maker}`,
+                heading: model.name,
+                stats: [
+                    { label: 'Score', value: `${model.score ?? '–'}/100` },
+                    { label: 'Word errors', value: percent(model.wordErrorRate) },
+                    { label: 'Typical wait', value: seconds(model.latencyMedianMs) },
+                ],
+            },
+        })
+    )
+    return [overview, ...models]
+}

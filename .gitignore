@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+# Participants' audio stays out of git until each speaker agrees to publish it.
+recordings/*.wav
+recordings/*.m4a
+recordings/*.mp3
+recordings/*.aac
+recordings/*.caf
+# Full model output and engine logs: rewritten every run.
+results/raw/
+recordings/*.16k.wav
+.server/
