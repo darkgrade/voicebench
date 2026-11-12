@@ -89,6 +89,18 @@ export interface ModelDetail {
 }
 
 export const RUN = results as RunDetails
+
+/** How much the results rest on: speakers who recorded, and the spoken lines across all of them. */
+export const SAMPLE = {
+    speakers: RUN.input?.speakers?.length ?? 0,
+    lines: (RUN.input?.speakers ?? []).reduce((sum, speaker) => sum + ((speaker as { utterances?: number }).utterances ?? 0), 0),
+}
+
+/** "English only, from 8 speakers (160 spoken lines)." */
+export function sampleSentence(): string {
+    const people = SAMPLE.speakers === 1 ? 'one speaker' : `${SAMPLE.speakers} speakers`
+    return `English only for now, from ${people} (${SAMPLE.lines} spoken lines in all). With a sample this size, treat scores within a few points of each other as ties.`
+}
 export const MODELS = RUN.models.filter(model => !model.error && model.wordErrorRate !== undefined)
 
 const details = import.meta.glob<ModelDetail>('../results/models/*.json', { eager: true, import: 'default' })

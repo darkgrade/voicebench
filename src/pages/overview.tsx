@@ -12,7 +12,7 @@ import {
     TabsTrigger,
     TradeoffChart,
 } from '@kevinschaich/components'
-import { BENCH, FILTERS, MODELS, type ModelSummary, RUN, percent, seconds } from '@site/data'
+import { BENCH, FILTERS, MODELS, type ModelSummary, RUN, percent, sampleSentence, seconds } from '@site/data'
 import { Method } from '@site/pages/method'
 import { TakePart } from '@site/pages/take-part'
 import { useEffect, useState } from 'react'
@@ -107,7 +107,7 @@ export function Overview() {
                     <Empty className="border">
                         <EmptyHeader>
                             <EmptyTitle>Results are on the way</EmptyTitle>
-                            <EmptyDescription>Volunteers are recording the script now. Check back soon.</EmptyDescription>
+                            <EmptyDescription>Volunteers are recording the script now, in English to start. Check back soon.</EmptyDescription>
                         </EmptyHeader>
                     </Empty>
                 ) : (
@@ -115,7 +115,7 @@ export function Overview() {
                         <Filters chosen={chosen} choose={choose} />
                         <Leaderboard rows={shown} rowKey={model => model.id} defaultSort="score" columns={COLUMNS} />
                         <p className="text-sm text-muted-foreground">
-                            Everyone read the same twenty things people say to a voice assistant. The score, out of 100, weighs accuracy most, then speed. Word errors count every word a model got wrong, missed or added. The wait is how
+                            {sampleSentence()} Everyone read the same twenty things people say to a voice assistant. The score, out of 100, weighs accuracy most, then speed. Word errors count every word a model got wrong, missed or added. The wait is how
                             long after each line its full text arrived, on {RUN.hardware?.chip ?? 'a Mac'}. Pick a model to see every line it heard.
                         </p>
                     </>

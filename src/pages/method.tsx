@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle, CodeBlock, CodeBlockContent } from '@kevinschaich/components'
-import { BENCH, RUN } from '@site/data'
+import { BENCH, RUN, SAMPLE, sampleSentence } from '@site/data'
 
 const HEADINGS: Record<string, string> = {
     settings: 'Settings',
@@ -22,6 +22,7 @@ export function Method() {
                     Volunteers read the same script into their own phones. Every recording goes through every model on one Mac, one model at a time, with each engine's default
                     settings. Each model is measured on two things only: how many words it gets wrong, and how long you wait for the text after you stop talking.
                 </p>
+                <p>{SAMPLE.speakers ? sampleSentence() : 'English only for now.'}</p>
                 {Object.entries(RUN.method ?? {}).map(([key, text]) => (
                     <section key={key}>
                         <h3>{HEADINGS[key] ?? key}</h3>

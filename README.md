@@ -9,7 +9,8 @@ Which speech model hears real people best, and fastest?
 ## How it works
 
 Volunteers read the same twenty lines (`script/reading-script.md`), things people say to a voice
-assistant, into their own phones. Every recording goes through open speech-to-text models running
+assistant, into their own phones. English only for now; the results page states how many speakers and
+lines each result rests on. Every recording goes through open speech-to-text models running
 locally on a Mac, one model at a time, each with its engine's default settings.
 
 - **Accuracy** is word error rate: substitutions, deletions and insertions against the script, pooled
