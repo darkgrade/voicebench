@@ -1,11 +1,14 @@
 import { App } from '@site/app'
 import '@site/styles.css'
 import { StrictMode } from 'react'
-import { hydrateRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 
-hydrateRoot(
-    document.getElementById('root')!,
+const root = document.getElementById('root')!
+const app = (
     <StrictMode>
         <App path={location.pathname} />
     </StrictMode>
 )
+// Built pages arrive prerendered and are hydrated; the dev server (and the dev-only /progress page) renders fresh.
+if (root.hasChildNodes()) hydrateRoot(root, app)
+else createRoot(root).render(app)

@@ -15,6 +15,7 @@ import { CRISPASR_BINARY, CRISPASR_MODELS, LLAMA_MODELS, LLAMA_SERVER_BINARY, RU
 import { BYTES_PER_SECOND, ROOT, SAMPLE_RATE, type Recording, type Utterance, loadRecordings, referenceText, scriptPath } from '@bench/recordings'
 import { type ErrorCounts, align, errorRate, scoreTranscript, sumCounts } from '@bench/scoring'
 import { voiceScore } from '@bench/voice-score'
+import { failModel, finishModel, finishRun, startModel, startRun, stepDone } from '@bench/progress'
 import { createHash } from 'node:crypto'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -187,14 +188,42 @@ async function launch(model: VoiceModel, logPath: string): Promise<{ server: Run
     return { server: await startServer(modelPath, projectorPath, logPath), files: [modelPath, projectorPath] }
 }
 
+/** The model's files on disk, for estimating time left (bigger models take longer). */
+function modelSizeGigabytes(model: VoiceModel): number {
+    const engine = model.engine
+    const paths =
+        engine.kind === 'crispasr'
+            ? [join(CRISPASR_MODELS, engine.file)]
+            : engine.kind === 'python'
+              ? [join(RUNNERS_DIRECTORY, engine.path)]
+              : [join(LLAMA_MODELS, engine.directory, engine.model), join(LLAMA_MODELS, engine.directory, engine.projector)]
+    const bytes = paths.reduce((sum, path) => {
+        if (!existsSync(path)) return sum
+        const stats = statSync(path)
+        return sum + (stats.isDirectory() ? readdirSync(path).reduce((total, name) => total + statSync(join(path, name)).size, 0) : stats.size)
+    }, 0)
+    return bytes ? bytes / 1e9 : 2
+}
+
 function percentile(values: number[], fraction: number): number | null {
     if (values.length === 0) return null
     const sorted = [...values].sort((first, second) => first - second)
     return Math.round(sorted[Math.min(sorted.length - 1, Math.ceil(fraction * sorted.length) - 1)])
 }
 
-async function transcribeRecording(model: VoiceModel, server: RunningServer, recording: Recording): Promise<UtteranceResult[]> {
-    if (model.engine.kind === 'llama-realtime') return assignStreamedWords(await streamRecording(server.url, recording.pcm), recording.utterances)
+/** Steps for progress: one per utterance, or one per recording for streaming models (they hear it whole). */
+function stepsFor(model: VoiceModel, recordings: Recording[]): number {
+    return model.engine.kind === 'llama-realtime' ? recordings.length : recordings.reduce((sum, recording) => sum + recording.utterances.length, 0)
+}
+
+let stepsCompleted = 0
+
+async function transcribeRecording(model: VoiceModel, server: RunningServer, recording: Recording, totalSteps: number): Promise<UtteranceResult[]> {
+    if (model.engine.kind === 'llama-realtime') {
+        const results = assignStreamedWords(await streamRecording(server.url, recording.pcm), recording.utterances)
+        stepDone(model.id, ++stepsCompleted, totalSteps, `${recording.speaker.id}, streamed`, { note: `${results.filter(result => result.text).length} of ${results.length} lines heard` })
+        return results
+    }
     const results: UtteranceResult[] = []
     for (const utterance of recording.utterances) {
         const startedMs = performance.now()
@@ -204,6 +233,11 @@ async function transcribeRecording(model: VoiceModel, server: RunningServer, rec
         } catch (error) {
             results.push({ ...utterance, text: '', latencyMs: null, error: error instanceof Error ? error.message : String(error) })
         }
+        const last = results.at(-1)!
+        stepDone(model.id, ++stepsCompleted, totalSteps, `${recording.speaker.id}, line ${results.length}`, {
+            passed: last.latencyMs !== null && last.latencyMs < LATENCY_TARGET_MS,
+            note: last.error ?? `${((last.latencyMs ?? 0) / 1000).toFixed(2)} s: ${last.text.slice(0, 60)}`,
+        })
     }
     return results
 }
@@ -215,12 +249,15 @@ function rate(counts: ErrorCounts): number {
 async function benchmarkModel(model: VoiceModel, recordings: Recording[]): Promise<Record<string, unknown>> {
     const others = runningEngines()
     if (others.length) throw new Error(`another engine is still running, refusing to measure: ${others.join('; ')}`)
+    stepsCompleted = 0
+    const totalSteps = stepsFor(model, recordings)
+    startModel(model.id, totalSteps)
     const { server, files } = await launch(model, join(RAW_DIRECTORY, `${model.id}.server.log`))
     const perSpeaker: { id: string; results: UtteranceResult[] }[] = []
     try {
         if (model.engine.kind !== 'llama-realtime') await transcribe(server.url, slice(recordings[0].pcm, recordings[0].utterances[0])).catch(() => '')
         for (const recording of recordings) {
-            perSpeaker.push({ id: recording.speaker.id, results: await transcribeRecording(model, server, recording) })
+            perSpeaker.push({ id: recording.speaker.id, results: await transcribeRecording(model, server, recording, totalSteps) })
             console.log(`  ${model.id} ${recording.speaker.id} done`)
         }
     } finally {
@@ -247,9 +284,11 @@ async function benchmarkModel(model: VoiceModel, recordings: Recording[]): Promi
     writeFileSync(join(MODEL_DIRECTORY, `${model.id}.json`), `${JSON.stringify({ id: model.id, speakers: detail })}\n`)
     const latencyMedianMs = percentile(latencies, 0.5)
     const latencyP90Ms = percentile(latencies, 0.9)
+    const rubric = voiceScore({ wordErrorRate: errorRate(words), latencyMedianMs, latencyP90Ms })
+    finishModel(model.id, { score: rubric.score ?? '–', 'word errors': `${(errorRate(words) * 100).toFixed(1)}%`, 'typical wait': `${((latencyMedianMs ?? 0) / 1000).toFixed(2)} s` })
     return {
         id: model.id,
-        ...voiceScore({ wordErrorRate: errorRate(words), latencyMedianMs, latencyP90Ms }),
+        ...rubric,
         name: model.name,
         maker: model.maker,
         licence: model.licence,
@@ -348,6 +387,7 @@ async function main(): Promise<void> {
     const previous = existsSync(RESULTS_PATH) ? ((JSON.parse(readFileSync(RESULTS_PATH, 'utf8')) as { models?: { id: string }[] }).models ?? []) : []
     const rows = new Map(previous.map(row => [row.id, row as Record<string, unknown>]))
     console.log(`voicebench: ${models.length} models × ${recordings.length} recordings`)
+    startRun('voicebench', models.map(model => ({ id: model.id, name: model.name, sizeGigabytes: modelSizeGigabytes(model) })))
     for (const model of models) {
         console.log(`voicebench: ${model.id}`)
         try {
@@ -355,12 +395,14 @@ async function main(): Promise<void> {
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error)
             console.log(`  ${model.id} failed: ${message}`)
+            failModel(model.id, message)
             rows.set(model.id, { id: model.id, name: model.name, maker: model.maker, error: message })
             if (runningEngines().length) throw new Error(`stopping: an engine is still running after ${model.id} failed`)
         }
         const ordered = [...rows.values()].sort((first, second) => Number(second.score ?? -1) - Number(first.score ?? -1))
         writeFileSync(RESULTS_PATH, `${JSON.stringify({ ...details, models: ordered }, null, 2)}\n`)
     }
+    finishRun()
 }
 
 await main()

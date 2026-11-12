@@ -2,6 +2,7 @@ import { Byline } from '@kevinschaich/components'
 import { BENCH, MODELS } from '@site/data'
 import { ModelPage } from '@site/pages/model'
 import { Overview } from '@site/pages/overview'
+import { ProgressPage } from '@site/pages/progress'
 
 /** The page for a path under BENCH.path: the overview, or one model's page. */
 export function App({ path }: { path: string }) {
@@ -18,7 +19,7 @@ export function App({ path }: { path: string }) {
                 </div>
                 <Byline repo={BENCH.repository} />
             </header>
-            {model ? <ModelPage model={model} /> : <Overview />}
+            {id === 'progress' ? <ProgressPage /> : model ? <ModelPage model={model} /> : <Overview />}
         </div>
     )
 }
