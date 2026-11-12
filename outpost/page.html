@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="op-kit">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voicebench</title>
+    <style>
+      .tabs { display: flex; gap: 4px; }
+      .bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+      td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <main class="op-page">
+      <header class="bar">
+        <div>
+          <h1>Voicebench</h1>
+          <p class="op-note" id="note">Speech-to-text models on real people's recordings.</p>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="op-switch" role="tab" data-tab="results" aria-pressed="true">Results</button>
+          <button class="op-switch" role="tab" data-tab="runs" aria-pressed="false">Runs</button>
+        </div>
+      </header>
+      <section id="results">
+        <div class="op-loader"></div>
+      </section>
+      <section id="runs" hidden>
+        <outpost-workflow-graph workflow="voicebench"></outpost-workflow-graph>
+      </section>
+    </main>
+    <script type="module">
+      import { App } from 'https://cdn.jsdelivr.net/npm/@modelcontextprotocol/ext-apps@2.0.3/dist/src/app-with-deps.js';
+
+      const app = new App({ name: 'Voicebench', version: '0.1.0' });
+      const percent = (value) => (value == null ? '–' : `${(value * 100).toFixed(1)}%`);
+      const seconds = (ms) => (ms == null ? '–' : `${(ms / 1000).toFixed(2)} s`);
+      const escape = (text) => String(text ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+      function show(data) {
+        if (!data.models.length) {
+          document.getElementById('note').textContent = "Speech-to-text models on real people's recordings.";
+          document.getElementById('results').innerHTML = '<div class="op-empty">No results published yet. Start a run under Runs: it publishes them when it finishes.</div>';
+          return;
+        }
+        document.getElementById('note').textContent = `${data.models.length} models, ${data.speakers} speakers · published ${new Date(data.date).toLocaleDateString()}`;
+        const rows = data.models
+          .map(
+            (row, index) => `<tr>
+              <td class="num op-muted">${row.error ? '' : index + 1}</td>
+              <td>${escape(row.name)}<div class="op-muted">${escape(row.maker)}</div></td>
+              <td class="num">${row.error ? `<span class="op-tag" data-tone="bad" title="${escape(row.error)}">Failed</span>` : (row.score ?? '–')}</td>
+              <td class="num">${percent(row.wordErrorRate)}</td>
+              <td class="num">${seconds(row.latencyMedianMs)}</td>
+              <td>${escape(row.mode ?? '')}</td>
+              <td class="num">${row.sizeGigabytes == null ? '–' : `${row.sizeGigabytes} GB`}</td>
+            </tr>`,
+          )
+          .join('');
+        document.getElementById('results').innerHTML = `<table class="op-table">
+          <thead><tr><th class="num">#</th><th>Model</th><th class="num">Score</th><th class="num">Word errors</th><th class="num">Typical wait</th><th>Mode</th><th class="num">Size</th></tr></thead>
+          <tbody>${rows}</tbody></table>`;
+      }
+
+      for (const tab of document.querySelectorAll('[data-tab]'))
+        tab.addEventListener('click', () => {
+          for (const other of document.querySelectorAll('[data-tab]')) other.setAttribute('aria-pressed', String(other === tab));
+          document.getElementById('results').hidden = tab.dataset.tab !== 'results';
+          document.getElementById('runs').hidden = tab.dataset.tab !== 'runs';
+        });
+
+      app.ontoolresult = (result) => result.structuredContent && show(result.structuredContent);
+      await app.connect(); // the handshake: without it the host sends nothing
+      document.querySelector('outpost-workflow-graph').app = app;
+      const result = await app.callServerTool({ name: 'voicebench', arguments: {} });
+      if (result.isError) document.getElementById('results').innerHTML = `<div class="op-callout" data-tone="bad">${escape(result.content?.[0]?.text)}</div>`;
+      else show(result.structuredContent);
+    </script>
+  </body>
+</html>

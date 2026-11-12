@@ -1,0 +1,11 @@
+{
+  "name": "voicebench",
+  "owner": { "name": "Darkgrade" },
+  "plugins": [
+    {
+      "name": "voicebench",
+      "source": "./",
+      "description": "Voicebench in Outpost: its results, and its workflow's runs on this Mac's GPU."
+    }
+  ]
+}

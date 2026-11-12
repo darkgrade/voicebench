@@ -52,8 +52,9 @@ bun install       # once: switches on the checks
 bun run publish
 ```
 
-That scrubs each file into the next `speaker-NN.wav`, moves the original to the Trash, runs every model,
-checks everything, commits as "Voicebench" and pushes. If a check fails, nothing is committed: fix what it
+That scrubs each file into the next `speaker-NN.wav`, moves the original to the Trash, checks everything,
+commits the recordings as "Voicebench" and pushes. Then start a run (Voicebench in Outpost, or below): it
+transcribes them with every model and publishes the results. If a check fails, nothing is committed: fix what it
 names. Don't bypass the checks with `--no-verify`, and add recordings only from a Mac with the checks on,
 never through GitHub's web upload. Once something identifying is pushed, it can't be taken back.
 
@@ -61,7 +62,8 @@ never through GitHub's web upload. Once something identifying is pushed, it can'
 
 ```sh
 bun install && bun run setup   # engines and models (about 40 GB), once
-bun run bench                  # every model; `-- --models a,b` for some
+bun run worker                 # serves the benchmark's tasks (leave it running)
+bun run bench                  # starts a run: every model; `-- --models a,b` for some, `--force` to redo all
 bun run dev                    # the results site
 ```
 

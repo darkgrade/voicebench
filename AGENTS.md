@@ -15,7 +15,8 @@ changes, change the others.
 
 | Path | What it holds |
 | --- | --- |
-| `bench/` | The harness, in TypeScript, run with bun. `run.ts` runs the benchmark, `setup.ts` installs engines and models, `models.ts` lists every model under test. |
+| `bench/` | The harness, in TypeScript, run with bun. `workflow.ts` is the benchmark as a workflow (Outpost's workflows: one task per model, smaller tasks under it, then `publish`), `run.ts` measures, `setup.ts` installs engines and models, `models.ts` lists every model under test. |
+| `.claude-plugin/`, `outpost/` | The Outpost app: installed from this repository, it shows the results and the workflow's runs live (Run, Run without cache, Cancel, Retry), and keeps a worker on the Mac running this repository's latest commit. Never part of the public site. |
 | `bench/runners/` | Small non-TypeScript shims, only for models that ship nothing else (see Approved exceptions). |
 | `script/` | The fixed input every participant or run uses (here, the reading script). |
 | `recordings/` | Inputs gathered from people: `speaker-NN.<ext>` plus `speakers.json` (anonymous metadata). Audio is git-ignored until its speaker agrees to publish it. |
@@ -26,7 +27,9 @@ changes, change the others.
 **Commands** (the same names in every bench)
 
 - `bun run setup`: download engines and models into the cache (`~/.cache/darkgrade-bench/<bench>/`, or `BENCH_CACHE`). Skips anything already there.
-- `bun run bench`: run every model. `bun run bench -- --models a,b` runs some; their rows in the results file are replaced and the rest kept.
+- `bun run worker`: serve the workflow's tasks on this Mac. In Outpost, `ops/worker.sh <bench>` keeps it running from Outpost's checkout; on its own it starts a development engine (nothing is published).
+- `bun run bench`: start a run on the worker (every model; `-- --models a,b` for some, whose rows are replaced and the rest kept; `--force` redoes what earlier runs kept). In Outpost, start runs from the app instead: a run there ends by committing the results files to `main` through Outpost (`publish`), and Vercel deploys them.
+- Results a task produced are kept (`results/raw/cache/`, git-ignored) under a key of everything that affects them (model files, input hashes, settings, harness code), so a run redoes only what changed.
 - `bun run dev` / `bun run build`: the results site.
 
 **Measuring**
@@ -70,7 +73,7 @@ only; full outputs live in `results/raw/`.
 - Participants are `speaker-01`, `speaker-02` … in the order their recordings arrive. Never store names, emails or anything else identifying in the repo.
 - `speakers.json` holds only each speaker's number and file (`publishAudio` is always true). Nothing about the person: no age, accent, region, device or anything else.
 - A file in `recordings/` means its speaker agreed to take part and to their audio being published.
-- Add recordings only with `bun run publish`: it rewrites each new file in `recordings/` as a bare 16-bit mono WAV with no tags (so the phone's model, OS build, recording ID, creation time and location don't come along), moves the original to the Trash, runs the models, and commits as "Voicebench <noreply@darkgrade.com>" at midnight UTC so no name, email, time of day or timezone can be matched to when someone sent their file.
+- Add recordings only with `bun run publish`: it rewrites each new file in `recordings/` as a bare 16-bit mono WAV with no tags (so the phone's model, OS build, recording ID, creation time and location don't come along), moves the original to the Trash, and commits the recordings as "Voicebench <noreply@darkgrade.com>" at midnight UTC so no name, email, time of day or timezone can be matched to when someone sent their file. Then run the workflow: its `publish` task commits results the same way ("Voicebench", midnight UTC).
 - `bench/anonymity.ts` enforces all of this as an allowlist, in the pre-commit and pre-push hooks (`.githooks/`, switched on by `bun install`) and in CI over every commit in history. If it fails, fix the cause; never bypass it with `--no-verify`, and never weaken a rule to get a commit through. Once something identifying is pushed it can't be taken back.
 - Words a speaker said that aren't in the script (a name, a place) fail the check until someone listens and records them as harmless in `recordings/reviewed-speech.json`. If they do identify someone, cut that part from the audio before adding it.
 

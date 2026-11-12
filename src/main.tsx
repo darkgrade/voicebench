@@ -9,6 +9,6 @@ const app = (
         <App path={location.pathname} />
     </StrictMode>
 )
-// Built pages arrive prerendered and are hydrated; the dev server (and the dev-only /progress page) renders fresh.
+// Built pages arrive prerendered and are hydrated; the dev server renders fresh.
 if (root.hasChildNodes()) hydrateRoot(root, app)
 else createRoot(root).render(app)

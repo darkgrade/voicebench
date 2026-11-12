@@ -1,13 +1,13 @@
 /**
- * One step from "volunteers' files are in recordings/" to "results are on GitHub":
+ * From "volunteers' files are in recordings/" to "their recordings are on GitHub":
  *  1. every new file in recordings/ (any format) becomes the next speaker-NN.wav, scrubbed of all
  *     metadata, and the original goes to the Trash;
- *  2. every model transcribes every recording;
- *  3. the anonymity check runs on everything staged;
- *  4. it's committed as "Voicebench" at midnight UTC and pushed (the pre-push check runs again).
- * Any failure stops it before anything is committed or pushed.
+ *  2. the anonymity check runs on everything staged;
+ *  3. it's committed as "Voicebench" at midnight UTC and pushed (the pre-push check runs again).
+ * Any failure stops it before anything is committed or pushed. Then run the workflow (Voicebench in
+ * Outpost, or `bun run bench`): it transcribes the new recordings with every model and publishes results.
  *
- *   bun run publish [-- --models id,id]
+ *   bun run publish
  */
 import { NEUTRAL_EMAIL, NEUTRAL_NAME } from '@bench/anonymity-identity'
 import { ROOT, addRecording, newRecordings } from '@bench/recordings'
@@ -29,14 +29,11 @@ for (const original of newRecordings()) {
     console.log(`Added ${id}; the original is in the Trash`)
 }
 
-const models = process.argv.indexOf('--models')
-run('bun', ['bench/run.ts', ...(models === -1 ? [] : ['--models', process.argv[models + 1]])])
-
-run('git', ['add', '--all', 'recordings', 'results'])
+if (!added.length) throw new Error('No new recordings in recordings/')
+run('git', ['add', '--all', 'recordings'])
 run('bun', ['bench/anonymity.ts', '--staged'])
 const date = `${new Date().toISOString().slice(0, 10)}T00:00:00+0000`
 const neutral = { GIT_AUTHOR_NAME: NEUTRAL_NAME, GIT_AUTHOR_EMAIL: NEUTRAL_EMAIL, GIT_AUTHOR_DATE: date, GIT_COMMITTER_NAME: NEUTRAL_NAME, GIT_COMMITTER_EMAIL: NEUTRAL_EMAIL, GIT_COMMITTER_DATE: date }
-const message = added.length ? `Add ${added.length === 1 ? 'a recording' : `${added.length} recordings`} and update results` : 'Update results'
-run('git', ['commit', '-m', message], neutral)
+run('git', ['commit', '-m', `Add ${added.length === 1 ? 'a recording' : `${added.length} recordings`}`], neutral)
 run('git', ['push'])
-console.log('Published.')
+console.log('Published. Run the workflow next (Voicebench in Outpost, or bun run bench) to update the results.')

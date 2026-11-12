@@ -25,7 +25,7 @@ export interface Speaker {
     publishAudio: boolean
 }
 
-export interface Utterance {
+export type Utterance = {
     startSeconds: number
     endSeconds: number
 }

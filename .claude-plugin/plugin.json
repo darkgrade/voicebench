@@ -1,0 +1,14 @@
+{
+  "name": "voicebench",
+  "title": "Voicebench",
+  "description": "Speech-to-text models on real people's recordings: the results, and runs of the benchmark on this Mac, live.",
+  "keywords": ["benchmark", "speech", "app"],
+  "workflows": ["voicebench"],
+  "worker": true,
+  "mcpServers": {
+    "voicebench": {
+      "command": "node",
+      "args": ["--no-warnings", "${CLAUDE_PLUGIN_ROOT}/outpost/server.ts"]
+    }
+  }
+}
