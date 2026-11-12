@@ -25,17 +25,7 @@ server.registerTool(
     const summary = {
       date,
       speakers: input?.speakers?.length ?? 0,
-      models: models.map((row: any) => ({
-        id: row.id,
-        name: row.name,
-        maker: row.maker,
-        score: row.score ?? null,
-        wordErrorRate: row.wordErrorRate ?? null,
-        latencyMedianMs: row.latencyMedianMs ?? null,
-        mode: row.mode ?? null,
-        sizeGigabytes: row.sizeGigabytes ?? null,
-        error: row.error ?? null,
-      })),
+      models, // full rows: the page shows a model's breakdown and facts when it is clicked
     };
     return { content: [{ type: 'text', text: JSON.stringify(summary) }], structuredContent: summary };
   },

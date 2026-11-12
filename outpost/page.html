@@ -7,6 +7,11 @@
     <style>
       .bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
       td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      tr.row { cursor: pointer; }
+      tr.row:hover td, tr.row:focus-visible td { background: var(--op-tint); }
+      tr.row:focus-visible { outline: none; }
+      .detail { display: flex; flex-direction: column; gap: 16px; }
+      .detail-head { display: flex; align-items: center; gap: 12px; }
       [hidden] { display: none !important; }
     </style>
   </head>
@@ -37,7 +42,41 @@
       const seconds = (ms) => (ms == null ? '–' : `${(ms / 1000).toFixed(2)} s`);
       const escape = (text) => String(text ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
+      let current = null;
+      function detail(row) {
+        const facts = [
+          ['Word errors', percent(row.wordErrorRate)],
+          ['Character errors', percent(row.characterErrorRate)],
+          ['Typical wait', seconds(row.latencyMedianMs)],
+          ['Slow wait (1 in 10)', seconds(row.latencyP90Ms)],
+          ['Within 1 s', row.withinTarget == null ? '–' : `${Math.round(row.withinTarget * 100)}%`],
+          ['Mode', row.mode],
+          ['Engine', row.engine],
+          ['Load time', row.loadSeconds == null ? '–' : `${row.loadSeconds} s`],
+          ['Peak memory', row.peakMemoryGigabytes == null ? '–' : `${row.peakMemoryGigabytes} GB`],
+          ['Size', row.sizeGigabytes == null ? '–' : `${row.sizeGigabytes} GB`],
+          ['Licence', row.licence],
+          ...Object.entries(row.bySpeaker || {}).map(([speaker, rate]) => [`Word errors, ${speaker}`, percent(rate)]),
+        ];
+        const reasons = (row.reasons || [])
+          .map((r) => `<tr><td>${escape(r.area)}</td><td>${escape(r.why)}</td><td class="num">${r.points} of ${r.weight}</td></tr>`)
+          .join('');
+        document.getElementById('results').innerHTML = `<div class="detail">
+          <div class="detail-head"><button class="op-btn ghost" id="back" aria-label="Back to all models">←</button>
+            <div><h2>${escape(row.name)}</h2><div class="op-muted">${escape(row.maker)}${row.source ? ` · <a href="${escape(row.source)}" target="_blank" rel="noopener">source</a>` : ''}</div></div>
+            <div class="op-stat" style="margin-left:auto">${row.error ? '<span class="op-tag" data-tone="bad">Failed</span>' : `Score ${row.score ?? '–'}`}</div></div>
+          ${row.error ? `<div class="op-callout" data-tone="bad">${escape(row.error)}</div>` : ''}
+          ${reasons ? `<section class="op-card"><header><h2>Score</h2></header><div class="op-body"><table class="op-table"><tbody>${reasons}</tbody></table></div></section>` : ''}
+          <section class="op-card"><header><h2>Details</h2></header><div class="op-body"><dl class="op-facts">${facts
+            .filter(([, value]) => value !== undefined && value !== null && value !== '')
+            .map(([label, value]) => `<dt>${escape(label)}</dt><dd>${escape(value)}</dd>`)
+            .join('')}</dl></div></section></div>`;
+        document.getElementById('back').addEventListener('click', () => show(current));
+        document.getElementById('back').focus();
+      }
+
       function show(data) {
+        current = data;
         if (!data.models.length) {
           document.getElementById('note').textContent = "Speech-to-text models on real people's recordings.";
           document.getElementById('results').innerHTML = '<div class="op-empty">No results published yet. Start a run under Runs: it publishes them when it finishes.</div>';
@@ -46,7 +85,7 @@
         document.getElementById('note').textContent = `${data.models.length} models, ${data.speakers} speakers · published ${new Date(data.date).toLocaleDateString()}`;
         const rows = data.models
           .map(
-            (row, index) => `<tr>
+            (row, index) => `<tr tabindex="0" data-model="${escape(row.id)}" class="row">
               <td class="num op-muted">${row.error ? '' : index + 1}</td>
               <td>${escape(row.name)}<div class="op-muted">${escape(row.maker)}</div></td>
               <td class="num">${row.error ? `<span class="op-tag" data-tone="bad" title="${escape(row.error)}">Failed</span>` : (row.score ?? '–')}</td>
@@ -60,6 +99,11 @@
         document.getElementById('results').innerHTML = `<table class="op-table">
           <thead><tr><th class="num">#</th><th>Model</th><th class="num">Score</th><th class="num">Word errors</th><th class="num">Typical wait</th><th>Mode</th><th class="num">Size</th></tr></thead>
           <tbody>${rows}</tbody></table>`;
+        for (const tr of document.querySelectorAll('tr.row')) {
+          const open = () => detail(data.models.find((row) => row.id === tr.dataset.model));
+          tr.addEventListener('click', open);
+          tr.addEventListener('keydown', (event) => event.key === 'Enter' && open());
+        }
       }
 
       for (const tab of document.querySelectorAll('[data-tab]'))
