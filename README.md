@@ -68,3 +68,4 @@ bun run dev                    # the results site
 ```
 
 Needs Apple Silicon, macOS, Node 24, bun, ffmpeg, Python 3.11 and the Hugging Face CLI (`hf`).
+
