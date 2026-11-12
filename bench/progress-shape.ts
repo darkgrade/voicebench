@@ -4,7 +4,8 @@ export interface ProgressModel {
     id: string
     name: string
     sizeGigabytes: number
-    status: 'waiting' | 'running' | 'done' | 'failed'
+    /** skipped: already done in an earlier run of the same script, kept as it was (a resumed run). */
+    status: 'waiting' | 'running' | 'done' | 'skipped' | 'failed' | 'stopped'
     startedAt?: number
     finishedAt?: number
     /** Headline numbers once done, e.g. { score: 68, 'Turns right': '83%' }. */
@@ -22,6 +23,10 @@ export interface ProgressStep {
 
 export interface ProgressFile {
     benchmark: string
+    /** running → stopping (stop asked for, finishing the current step) → stopped; or finished. */
+    state: 'running' | 'stopping' | 'stopped' | 'finished'
+    /** The run's process, so the page can tell a live run from one that died. */
+    pid?: number
     startedAt: number
     updatedAt: number
     finishedAt?: number
@@ -47,7 +52,7 @@ export function timeLeftMs(progress: ProgressFile, now = Date.now()): number | n
 
 /** One line for a chat update: "7/24 done: … Next: …, about 1 h 10 min left." */
 export function summaryLine(progress: ProgressFile): string {
-    const finished = progress.models.filter(model => model.status === 'done' || model.status === 'failed')
+    const finished = progress.models.filter(model => model.status === 'done' || model.status === 'skipped' || model.status === 'failed')
     const last = [...finished].sort((first, second) => (second.finishedAt ?? 0) - (first.finishedAt ?? 0))[0]
     const next = progress.models.find(model => model.status === 'running') ?? progress.models.find(model => model.status === 'waiting')
     const left = timeLeftMs(progress)

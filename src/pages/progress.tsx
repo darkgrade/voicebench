@@ -2,9 +2,10 @@
  * The live progress of a benchmark run, for the dev server only: it reads results/raw/progress.json
  * (served by vite.config.ts) every second. Never prerendered or published.
  */
-import { Badge, Card, CardContent, CardHeader, CardTitle, Empty, EmptyDescription, EmptyHeader, EmptyTitle, Progress, ProgressLabel, ProgressValue, Stat, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@kevinschaich/components'
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Empty, EmptyDescription, EmptyHeader, EmptyTitle, Progress, ProgressLabel, ProgressValue, Stat, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@kevinschaich/components'
 import { type ProgressFile, timeLeftMs } from '@bench/progress-shape'
 import { BENCH } from '@site/data'
+import { Play, RotateCw, Square } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 function duration(milliseconds: number | null | undefined): string {
@@ -21,17 +22,21 @@ const STATUS: Record<string, { label: string; variant: 'secondary' | 'outline' |
     running: { label: 'Running', variant: 'default' },
     done: { label: 'Done', variant: 'secondary' },
     failed: { label: 'Failed', variant: 'destructive' },
+    skipped: { label: 'Done earlier', variant: 'secondary' },
+    stopped: { label: 'Stopped', variant: 'outline' },
 }
 
-function useProgress(): { progress: ProgressFile | null; now: number } {
-    const [progress, setProgress] = useState<ProgressFile | null>(null)
+type LiveProgress = ProgressFile & { alive?: boolean }
+
+function useProgress(): { progress: LiveProgress | null; now: number } {
+    const [progress, setProgress] = useState<LiveProgress | null>(null)
     const [now, setNow] = useState(Date.now())
     useEffect(() => {
         let active = true
         const load = async () => {
             try {
                 const response = await fetch(`${BENCH.path}progress.json`, { cache: 'no-store' })
-                if (active && response.ok) setProgress((await response.json()) as ProgressFile)
+                if (active && response.ok) setProgress((await response.json()) as LiveProgress)
             } catch {
                 // the run may be between writes; try again next tick
             }
@@ -47,6 +52,45 @@ function useProgress(): { progress: ProgressFile | null; now: number } {
     return { progress, now }
 }
 
+function control(action: 'stop' | 'start' | 'resume'): void {
+    const path = action === 'stop' ? 'control/stop' : `control/start${action === 'resume' ? '?resume=1' : ''}`
+    void fetch(`${BENCH.path}${path}`, { method: 'POST' })
+}
+
+/** Stop while a run is going; resume a stopped or interrupted one; or start a fresh run. */
+function Controls({ progress }: { progress: LiveProgress | null }) {
+    const [asked, setAsked] = useState<string | null>(null)
+    useEffect(() => setAsked(null), [progress?.state, progress?.alive])
+    const running = Boolean(progress?.alive)
+    const left = progress?.models.some(model => model.status === 'waiting' || model.status === 'running' || model.status === 'stopped') ?? false
+    const act = (action: 'stop' | 'start' | 'resume') => {
+        setAsked(action)
+        control(action)
+    }
+    if (running) {
+        return (
+            <Button variant="destructive" disabled={progress?.state === 'stopping' || asked === 'stop'} onClick={() => act('stop')}>
+                <Square />
+                {progress?.state === 'stopping' || asked === 'stop' ? 'Stopping after this turn…' : 'Stop'}
+            </Button>
+        )
+    }
+    return (
+        <div className="flex gap-2">
+            {left && (
+                <Button disabled={asked !== null} onClick={() => act('resume')}>
+                    <Play />
+                    Resume
+                </Button>
+            )}
+            <Button variant={left ? 'outline' : 'default'} disabled={asked !== null} onClick={() => act('start')}>
+                <RotateCw />
+                {progress ? 'Run everything again' : 'Run the benchmark'}
+            </Button>
+        </div>
+    )
+}
+
 export function ProgressPage() {
     const { progress, now } = useProgress()
     if (!progress) {
@@ -54,27 +98,32 @@ export function ProgressPage() {
             <Empty className="border">
                 <EmptyHeader>
                     <EmptyTitle>No run yet</EmptyTitle>
-                    <EmptyDescription>Start one with `bun run bench`; this page follows it live.</EmptyDescription>
+                    <EmptyDescription>Start one here or with `bun run bench`; this page follows it live.</EmptyDescription>
                 </EmptyHeader>
+                <Controls progress={progress} />
             </Empty>
         )
     }
-    const finished = progress.models.filter(model => model.status === 'done' || model.status === 'failed').length
+    const finished = progress.models.filter(model => model.status === 'done' || model.status === 'skipped' || model.status === 'failed').length
     const current = progress.current
     const currentModel = progress.models.find(model => model.id === current?.model)
-    const running = !progress.finishedAt
+    const running = Boolean(progress.alive)
     const left = running ? timeLeftMs(progress, now) : 0
+    const title = running ? (progress.state === 'stopping' ? 'Stopping' : 'Running') : progress.state === 'finished' ? 'Finished' : progress.state === 'stopped' ? 'Stopped' : 'Interrupted'
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-2">
-                <h1 className="font-heading text-2xl font-semibold">{running ? 'Running' : 'Finished'}</h1>
-                {running && <span className="size-2 animate-pulse rounded-full bg-foreground" aria-hidden />}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                    <h1 className="font-heading text-2xl font-semibold">{title}</h1>
+                    {running && <span className="size-2 animate-pulse rounded-full bg-foreground" aria-hidden />}
+                </div>
+                <Controls progress={progress} />
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Stat boxed label="Models done" value={`${finished}/${progress.models.length}`} />
                 <Stat boxed label="Running for" value={duration((progress.finishedAt ?? now) - progress.startedAt)} />
-                <Stat boxed label="Time left" value={running ? (left === null ? 'After the first model' : duration(left)) : 'Done'} />
+                <Stat boxed label="Time left" value={running ? (left === null ? 'After the first model' : duration(left)) : progress.state === 'finished' ? 'Done' : 'Paused'} />
                 <Stat boxed label="Last update" value={`${duration(now - progress.updatedAt)} ago`} />
             </div>
 

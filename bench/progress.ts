@@ -4,13 +4,15 @@
  * every bench; the dev site's /progress page and Claude both read it. Written whole on every change
  * (to a temporary file, then renamed) so a reader never sees half of it.
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { type ProgressFile, summaryLine } from '@bench/progress-shape'
 
 export { summaryLine, timeLeftMs } from '@bench/progress-shape'
 
 export const PROGRESS_PATH = resolve(import.meta.dirname, '..', 'results', 'raw', 'progress.json')
+/** Present while a stop has been asked for (by the page's Stop button or `bun run bench:stop`). */
+export const STOP_PATH = resolve(import.meta.dirname, '..', 'results', 'raw', 'stop-requested')
 const RECENT_STEPS = 12
 
 function read(): ProgressFile | null {
@@ -32,9 +34,43 @@ function update(change: (progress: ProgressFile) => void): void {
     write(progress)
 }
 
-/** A new run of these models, in order. Replaces any earlier progress. */
-export function startRun(benchmark: string, models: { id: string; name: string; sizeGigabytes: number }[]): void {
-    write({ benchmark, startedAt: Date.now(), updatedAt: Date.now(), models: models.map(model => ({ ...model, status: 'waiting' })), recent: [] })
+/**
+ * A new run of these models, in order. Replaces any earlier progress. Models in `alreadyDone` (a resumed
+ * run) are shown as skipped with their earlier result and aren't run again.
+ */
+export function startRun(benchmark: string, models: { id: string; name: string; sizeGigabytes: number }[], alreadyDone: Map<string, Record<string, string | number>> = new Map()): void {
+    rmSync(STOP_PATH, { force: true })
+    write({
+        benchmark,
+        state: 'running',
+        pid: process.pid,
+        startedAt: Date.now(),
+        updatedAt: Date.now(),
+        models: models.map(model => (alreadyDone.has(model.id) ? { ...model, status: 'skipped', result: alreadyDone.get(model.id) } : { ...model, status: 'waiting' })),
+        recent: [],
+    })
+}
+
+/** Asks the run to stop after its current step; the run stops its engine and marks itself stopped. */
+export function requestStop(): void {
+    mkdirSync(dirname(STOP_PATH), { recursive: true })
+    writeFileSync(STOP_PATH, String(Date.now()))
+    update(progress => {
+        if (progress.state === 'running') progress.state = 'stopping'
+    })
+}
+
+export function stopRequested(): boolean {
+    return existsSync(STOP_PATH)
+}
+
+/** The current model was stopped part-way; it's left out of the results and runs again on resume. */
+export function stopModel(id: string): void {
+    update(progress => {
+        const model = progress.models.find(candidate => candidate.id === id)
+        if (model) Object.assign(model, { status: 'stopped', finishedAt: Date.now() })
+        progress.current = undefined
+    })
 }
 
 export function startModel(id: string, steps: number, label = 'Loading the model'): void {
@@ -69,15 +105,22 @@ export function failModel(id: string, error: string): void {
     })
 }
 
-export function finishRun(): void {
+export function finishRun(state: 'finished' | 'stopped' = 'finished'): void {
     update(progress => {
+        progress.state = state
         progress.finishedAt = Date.now()
         progress.current = undefined
     })
+    rmSync(STOP_PATH, { force: true })
 }
 
-/** `bun bench/progress.ts`: print the summary line (what Claude posts to chat). */
+/** `bun bench/progress.ts` prints the summary line (what Claude posts to chat); `--stop` asks the run to stop. */
 if (import.meta.main) {
-    const progress = read()
-    console.log(progress ? summaryLine(progress) : 'No run in progress.')
+    if (process.argv.includes('--stop')) {
+        requestStop()
+        console.log('Asked the run to stop after its current step.')
+    } else {
+        const progress = read()
+        console.log(progress ? summaryLine(progress) : 'No run in progress.')
+    }
 }

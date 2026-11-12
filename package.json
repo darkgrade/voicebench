@@ -14,7 +14,9 @@
         "prepare": "git config core.hooksPath .githooks",
         "recordings:add": "bun bench/add-recording.ts",
         "check:anonymity": "bun bench/anonymity.ts --tree HEAD",
-        "publish": "bun bench/publish.ts"
+        "publish": "bun bench/publish.ts",
+        "bench:stop": "bun bench/progress.ts --stop",
+        "bench:status": "bun bench/progress.ts"
     },
     "dependencies": {
         "@kevinschaich/components": "^0.8.0",

@@ -15,7 +15,7 @@ import { CRISPASR_BINARY, CRISPASR_MODELS, LLAMA_MODELS, LLAMA_SERVER_BINARY, RU
 import { BYTES_PER_SECOND, ROOT, SAMPLE_RATE, type Recording, type Utterance, loadRecordings, referenceText, scriptPath } from '@bench/recordings'
 import { type ErrorCounts, align, errorRate, scoreTranscript, sumCounts } from '@bench/scoring'
 import { voiceScore } from '@bench/voice-score'
-import { failModel, finishModel, finishRun, startModel, startRun, stepDone } from '@bench/progress'
+import { failModel, finishModel, finishRun, startModel, startRun, stepDone, stopModel, stopRequested } from '@bench/progress'
 import { createHash } from 'node:crypto'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -220,6 +220,9 @@ function stepsFor(model: VoiceModel, recordings: Recording[]): number {
 
 let stepsCompleted = 0
 
+/** Thrown between utterances when a stop has been asked for; the model is left out of the results. */
+class StopRequested extends Error {}
+
 async function transcribeRecording(model: VoiceModel, server: RunningServer, recording: Recording, totalSteps: number): Promise<UtteranceResult[]> {
     if (model.engine.kind === 'llama-realtime') {
         const results = assignStreamedWords(await streamRecording(server.url, recording.pcm), recording.utterances)
@@ -228,6 +231,7 @@ async function transcribeRecording(model: VoiceModel, server: RunningServer, rec
     }
     const results: UtteranceResult[] = []
     for (const utterance of recording.utterances) {
+        if (stopRequested()) throw new StopRequested()
         const startedMs = performance.now()
         try {
             const text = await transcribe(server.url, slice(recording.pcm, utterance))
@@ -259,6 +263,7 @@ async function benchmarkModel(model: VoiceModel, recordings: Recording[]): Promi
     try {
         if (model.engine.kind !== 'llama-realtime') await transcribe(server.url, slice(recordings[0].pcm, recordings[0].utterances[0])).catch(() => '')
         for (const recording of recordings) {
+            if (stopRequested()) throw new StopRequested()
             perSpeaker.push({ id: recording.speaker.id, results: await transcribeRecording(model, server, recording, totalSteps) })
             console.log(`  ${model.id} ${recording.speaker.id} done`)
         }
@@ -389,12 +394,33 @@ async function main(): Promise<void> {
     const previous = existsSync(RESULTS_PATH) ? ((JSON.parse(readFileSync(RESULTS_PATH, 'utf8')) as { models?: { id: string }[] }).models ?? []) : []
     const rows = new Map(previous.map(row => [row.id, row as Record<string, unknown>]))
     console.log(`voicebench: ${models.length} models × ${recordings.length} recordings`)
-    startRun('voicebench', models.map(model => ({ id: model.id, name: model.name, sizeGigabytes: modelSizeGigabytes(model) })))
-    for (const model of models) {
+    const resume = argumentsGiven.includes('--resume')
+    const scriptHash = await sha256(scriptPath())
+    const previousInput = existsSync(RESULTS_PATH) ? (JSON.parse(readFileSync(RESULTS_PATH, 'utf8')) as { input?: { scriptSha256?: string; speakers?: { recordingSha256?: string }[] } }).input : undefined
+    const sameInput = previousInput?.scriptSha256 === scriptHash && JSON.stringify(previousInput?.speakers?.map(speaker => speaker.recordingSha256)) === JSON.stringify((details.input as { speakers: { recordingSha256: string }[] }).speakers.map(speaker => speaker.recordingSha256))
+    const done = new Map(
+        resume && sameInput
+            ? [...rows.values()]
+                  .filter(row => !row.error && row.score !== undefined)
+                  .map(row => [String(row.id), { score: Number(row.score), 'word errors': `${(Number(row.wordErrorRate) * 100).toFixed(1)}%`, 'typical wait': `${(Number(row.latencyMedianMs ?? 0) / 1000).toFixed(2)} s` }] as const)
+            : []
+    )
+    startRun('voicebench', models.map(model => ({ id: model.id, name: model.name, sizeGigabytes: modelSizeGigabytes(model) })), new Map(done))
+    process.on('SIGINT', () => {
+        finishRun('stopped')
+        process.exit(130)
+    })
+    for (const model of models.filter(candidate => !done.has(candidate.id))) {
+        if (stopRequested()) break
         console.log(`voicebench: ${model.id}`)
         try {
             rows.set(model.id, await benchmarkModel(model, recordings))
         } catch (error) {
+            if (error instanceof StopRequested) {
+                console.log(`  ${model.id} stopped`)
+                stopModel(model.id)
+                break
+            }
             const message = error instanceof Error ? error.message : String(error)
             console.log(`  ${model.id} failed: ${message}`)
             failModel(model.id, message)
@@ -404,7 +430,7 @@ async function main(): Promise<void> {
         const ordered = [...rows.values()].sort((first, second) => Number(second.score ?? -1) - Number(first.score ?? -1))
         writeFileSync(RESULTS_PATH, `${JSON.stringify({ ...details, models: ordered }, null, 2)}\n`)
     }
-    finishRun()
+    finishRun(stopRequested() ? 'stopped' : 'finished')
 }
 
 await main()
