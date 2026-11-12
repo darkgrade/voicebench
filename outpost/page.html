@@ -82,7 +82,7 @@
           document.getElementById('results').innerHTML = '<div class="op-empty">No results published yet. Start a run under Runs: it publishes them when it finishes.</div>';
           return;
         }
-        document.getElementById('note').textContent = `${data.models.length} models, ${data.speakers} speakers · published ${new Date(data.date).toLocaleDateString()}`;
+        document.getElementById('note').textContent = `${data.models.length} ${data.models.length === 1 ? 'model' : 'models'}, ${data.speakers} speakers · published ${new Date(data.date).toLocaleDateString()}`;
         const rows = data.models
           .map(
             (row, index) => `<tr tabindex="0" data-model="${escape(row.id)}" class="row">
