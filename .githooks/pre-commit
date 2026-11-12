@@ -1,0 +1,3 @@
+#!/bin/sh
+# Refuses commits that could identify a volunteer. See bench/anonymity.ts.
+exec bun bench/anonymity.ts --staged

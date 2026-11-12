@@ -10,7 +10,11 @@
         "bench": "bun bench/run.ts",
         "dev": "vite",
         "build": "tsc --noEmit && vite build && vite build --ssr src/server.tsx --outDir .server && bun scripts/prerender.ts",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "prepare": "git config core.hooksPath .githooks",
+        "recordings:add": "bun bench/add-recording.ts",
+        "check:anonymity": "bun bench/anonymity.ts --tree HEAD",
+        "recordings:commit": "bun bench/commit-recordings.ts"
     },
     "dependencies": {
         "@kevinschaich/components": "^0.8.0",

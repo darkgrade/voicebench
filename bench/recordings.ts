@@ -66,9 +66,8 @@ function decode(path: string): Buffer {
 /** Utterance boundaries live beside the recording (speaker-01.utterances.json) and are committed. */
 function findUtterances(audioPath: string, utterancesPath: string): Utterance[] {
     if (!existsSync(utterancesPath)) {
-        const wavPath = utterancesPath.replace(/\.utterances\.json$/, '.16k.wav')
-        execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', audioPath, '-ac', '1', '-ar', String(SAMPLE_RATE), wavPath])
-        execFileSync(join(RUNNERS_DIRECTORY, 'venv-musci', 'bin', 'python'), [UTTERANCE_FINDER, wavPath, utterancesPath], { stdio: 'inherit' })
+        // recordings:add already wrote 16 kHz mono 16-bit WAV, which is what the detector reads.
+        execFileSync(join(RUNNERS_DIRECTORY, 'venv-musci', 'bin', 'python'), [UTTERANCE_FINDER, audioPath, utterancesPath], { stdio: 'inherit' })
     }
     return (JSON.parse(readFileSync(utterancesPath, 'utf8')) as { utterances: Utterance[] }).utterances
 }

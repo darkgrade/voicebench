@@ -1,0 +1,14 @@
+name: Anonymity
+on:
+  push:
+  pull_request:
+jobs:
+  anonymity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+      # Every commit in history, so a file added and later deleted is still caught.
+      - run: for commit in $(git rev-list --all); do bun bench/anonymity.ts --tree "$commit" || exit 1; done

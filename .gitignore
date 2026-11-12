@@ -9,5 +9,4 @@ recordings/*.aac
 recordings/*.caf
 # Full model output and engine logs: rewritten every run.
 results/raw/
-recordings/*.16k.wav
 .server/
