@@ -19,7 +19,7 @@ export function App({ path }: { path: string }) {
                 </div>
                 <Byline repo={BENCH.repository} />
             </header>
-            {id === 'progress' ? <ProgressPage /> : model ? <ModelPage model={model} /> : <Overview />}
+            {import.meta.env.DEV && id === 'progress' ? <ProgressPage /> : model ? <ModelPage model={model} /> : <Overview />}
         </div>
     )
 }
