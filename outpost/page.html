@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Voicebench</title>
     <style>
-      .tabs { display: flex; gap: 4px; }
       .bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
       td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       [hidden] { display: none !important; }
@@ -18,9 +17,9 @@
           <h1>Voicebench</h1>
           <p class="op-note" id="note">Speech-to-text models on real people's recordings.</p>
         </div>
-        <div class="tabs" role="tablist">
-          <button class="op-switch" role="tab" data-tab="results" aria-pressed="true">Results</button>
-          <button class="op-switch" role="tab" data-tab="runs" aria-pressed="false">Runs</button>
+        <div class="op-switch" role="tablist" aria-label="View">
+          <button role="tab" data-tab="results" aria-pressed="true">Results</button>
+          <button role="tab" data-tab="runs" aria-pressed="false">Runs</button>
         </div>
       </header>
       <section id="results">
@@ -65,7 +64,10 @@
 
       for (const tab of document.querySelectorAll('[data-tab]'))
         tab.addEventListener('click', () => {
-          for (const other of document.querySelectorAll('[data-tab]')) other.setAttribute('aria-pressed', String(other === tab));
+          for (const other of document.querySelectorAll('[data-tab]')) {
+            other.setAttribute('aria-pressed', String(other === tab));
+            other.setAttribute('aria-selected', String(other === tab));
+          }
           document.getElementById('results').hidden = tab.dataset.tab !== 'results';
           document.getElementById('runs').hidden = tab.dataset.tab !== 'runs';
         });
