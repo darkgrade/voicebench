@@ -58,7 +58,7 @@ const transcriptKey = (model: VoiceModel, recording: Recording) => ['transcript'
 const engineKey = (model: VoiceModel) => ['engine', model.id, modelStamp(model)].join('|')
 
 export async function voicebench() {
-    const { task, serve, start } = await workflows()
+    const { task, serve, start } = await workflows('voicebench')
 
     const prepare = task<{ speakers: string[] }, PrepareOutput>({
         name: 'prepare',
