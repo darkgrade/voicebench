@@ -22,14 +22,10 @@
  *    them in recordings/reviewed-speech.json.
  *  - Anywhere in the repo: no audio or video files outside recordings/, and no images carrying EXIF,
  *    XMP, GPS or text metadata.
- *  - Commits that touch recordings/ or results/ (on push and in CI): authored and committed as
- *    "Voicebench <noreply@darkgrade.com>" at midnight UTC (`bun run publish` does this), so
- *    no name, email, time of day or timezone can be matched to when a volunteer sent their file. Every
- *    pushed commit's message must hold no emails, phone numbers or links.
+ *  - Every pushed commit's message holds no emails, phone numbers or links.
  * Git itself stores only paths, contents and the executable bit: Finder tags, "Where from", owners and
  * file dates never leave the Mac.
  */
-import { NEUTRAL_EMAIL, NEUTRAL_NAME } from '@bench/anonymity-identity'
 import { execFileSync } from 'node:child_process'
 
 type Problem = string
@@ -246,21 +242,12 @@ function carriesParticipantData(commit: string, path: string): boolean {
     return true
 }
 
-/** A commit's identity, dates and message, for commits that carry participant data. */
+/** A commit's message: no emails, links or phone numbers. */
 function checkCommit(commit: string): Problem[] {
     const label = commit.slice(0, 10)
-    const [authorName, authorEmail, authorDate, committerName, committerEmail, committerDate] = git('show', '-s', '--format=%an%n%ae%n%ad%n%cn%n%ce%n%cd', '--date=format:%H:%M:%S %z', commit).toString().split('\n')
     const message = git('show', '-s', '--format=%B', commit).toString()
-    const problems: Problem[] = []
     const withoutNoReply = message.replace(/[\w.+-]*noreply@[\w.-]+|\d+\+[\w-]+@users\.noreply\.github\.com/gi, '')
-    if (/[\w.+-]+@[\w-]+\.[\w.]+|https?:|www\.|\+?\d[\d ().-]{7,}\d/.test(withoutNoReply)) problems.push(`${label}: commit message contains an email, link or phone number`)
-    const touched = git('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', commit).toString().split('\n').filter(Boolean)
-    if (!touched.some(path => carriesParticipantData(commit, path))) return problems
-    for (const [role, name, email, date] of [['author', authorName, authorEmail, authorDate], ['committer', committerName, committerEmail, committerDate]]) {
-        if (name !== NEUTRAL_NAME || email !== NEUTRAL_EMAIL) problems.push(`${label}: touches recordings/ or results/, so its ${role} must be "${NEUTRAL_NAME} <${NEUTRAL_EMAIL}>" (use \`bun run publish\`), not "${name} <${email}>"`)
-        if (date !== '00:00:00 +0000') problems.push(`${label}: touches recordings/ or results/, so its ${role} date must be midnight UTC (use \`bun run publish\`), not ${date}`)
-    }
-    return problems
+    return /[\w.+-]+@[\w-]+\.[\w.]+|https?:|www\.|\+?\d[\d ().-]{7,}\d/.test(withoutNoReply) ? [`${label}: commit message contains an email, link or phone number`] : []
 }
 
 function checkEntries(entries: Entry[], label: string): Problem[] {

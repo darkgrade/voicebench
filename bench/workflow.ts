@@ -13,9 +13,9 @@
  */
 import { MODEL_DIRECTORY, type EngineStats, RAW_DIRECTORY, RESULTS_PATH, type SpeakerResults, type UtteranceResult, assignStreamedWords, engineStats, launch, modelRow, runDetails, runningEngines, slice, streamRecording, transcribe } from '@bench/run'
 import { CRISPASR_MODELS, LLAMA_MODELS, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel } from '@bench/models'
-import { NEUTRAL_EMAIL, NEUTRAL_NAME } from '@bench/anonymity-identity'
 import { type Recording, ROOT, loadRecordings } from '@bench/recordings'
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { type JsonObject, cache, fileHash, workflows } from 'outpost-workflows'
 
@@ -56,6 +56,23 @@ const recordingFor = (speaker: string): Recording => {
 }
 const transcriptKey = (model: VoiceModel, recording: Recording) => ['transcript', model.id, modelStamp(model), fileHash(recording.path), fileHash(recording.utterancesPath), SETTINGS].join('|')
 const engineKey = (model: VoiceModel) => ['engine', model.id, modelStamp(model)].join('|')
+
+/**
+ * The same check the pre-commit hook runs (bench/anonymity.ts), on the results about to be published: they
+ * reach GitHub through Outpost, not through git here, so no hook would see them. Staged in an index of
+ * their own, so this checkout's own index is untouched. Throws with the check's findings.
+ */
+function checkAnonymity(paths: string[]): void {
+    const index = join(RAW_DIRECTORY, 'publish.index')
+    const env = { ...process.env, GIT_INDEX_FILE: index }
+    rmSync(index, { force: true })
+    const git = (...argumentsGiven: string[]) => spawnSync('git', argumentsGiven, { cwd: ROOT, env, encoding: 'utf8' })
+    git('read-tree', 'HEAD')
+    git('add', '--', ...paths)
+    const checked = spawnSync('bun', [join(ROOT, 'bench', 'anonymity.ts'), '--staged'], { cwd: ROOT, env, encoding: 'utf8' })
+    rmSync(index, { force: true })
+    if (checked.status !== 0) throw new Error(`Not published: the anonymity check failed.\n${checked.stderr || checked.stdout}`)
+}
 
 export async function voicebench() {
     const { task, serve, start } = await workflows('voicebench')
@@ -124,7 +141,7 @@ export async function voicebench() {
             const perSpeaker: SpeakerResults[] = []
             try {
                 for (const speaker of input.speakers) {
-                    const { results } = await recordingTask.run({ model: model.id, speaker, url: server?.url ?? null, force: input.force }, { label: speaker })
+                    const { results } = await recordingTask.run({ model: model.id, speaker, url: server?.url ?? null, force: input.force }, { label: speaker, key: `recording:${model.id}:${speaker}` })
                     perSpeaker.push({ speaker, results })
                 }
             } finally {
@@ -149,10 +166,9 @@ export async function voicebench() {
             const files: Record<string, string> = { [relative(ROOT, RESULTS_PATH)]: `${JSON.stringify({ ...input.details, models: ordered }, null, 2)}\n` }
             for (const detail of input.modelDetails) files[relative(ROOT, join(MODEL_DIRECTORY, `${detail.id}.json`))] = `${JSON.stringify(detail)}\n`
             for (const [path, text] of Object.entries(files)) writeFileSync(join(ROOT, path), text)
+            checkAnonymity(Object.keys(files))
             if (!context.inOutpost) return { commit: null, summary: 'Written here (not in Outpost, so not published)' }
-            // As bench/anonymity.ts requires of every commit touching results/: by "Voicebench", at midnight UTC.
-            const date = `${new Date().toISOString().slice(0, 10)}T00:00:00Z`
-            const { commit } = await context.publish({ repo: REPOSITORY, files, message: 'Update results', author: { name: NEUTRAL_NAME, email: NEUTRAL_EMAIL, date } })
+            const { commit } = await context.publish({ repo: REPOSITORY, files, message: 'Update results' })
             return { commit, summary: commit ? `Published ${commit.slice(0, 7)}` : 'Nothing changed' }
         },
     })
@@ -160,23 +176,31 @@ export async function voicebench() {
     const run = task<RunInput, { ranked: number; summary: string }>({
         name: 'voicebench',
         timeout: '24h',
-        fn: async input => {
+        fn: async (input, context) => {
             const speakers = input.speakers ?? recordings().map(recording => recording.speaker.id)
             const models = input.models ?? VOICE_MODELS.map(model => model.id)
-            const prepared = await prepare.run({ speakers }, { label: 'Prepare recordings' })
+            await context.plan([
+                { key: 'prepare', label: 'Prepare recordings', kind: 'prepare' },
+                ...models.flatMap(id => [
+                    { key: `model:${id}`, label: modelById(id).name, kind: 'model' },
+                    ...speakers.map(speaker => ({ key: `recording:${id}:${speaker}`, label: speaker, kind: 'recording', parent: `model:${id}` })),
+                ]),
+                { key: 'publish', label: 'Publish', kind: 'publish' },
+            ])
+            const prepared = await prepare.run({ speakers }, { label: 'Prepare recordings', key: 'prepare' })
             const rows: Row[] = []
             const details: JsonObject[] = []
             for (const id of models) {
                 const model = modelById(id)
                 try {
-                    const result = await modelTask.run({ model: id, speakers: prepared.speakers, force: input.force }, { label: model.name })
+                    const result = await modelTask.run({ model: id, speakers: prepared.speakers, force: input.force }, { label: model.name, key: `model:${id}` })
                     rows.push(result.row)
                     details.push(result.detail)
                 } catch (error) {
                     rows.push({ id, name: model.name, maker: model.maker, error: error instanceof Error ? error.message : String(error) })
                 }
             }
-            const published = await publishTask.run({ details: prepared.details, rows, modelDetails: details }, { label: 'Publish' })
+            const published = await publishTask.run({ details: prepared.details, rows, modelDetails: details }, { label: 'Publish', key: 'publish' })
             const scored = rows.filter(row => !row.error).length
             return { ranked: scored, summary: `${scored} of ${rows.length} models scored · ${published.summary}` }
         },

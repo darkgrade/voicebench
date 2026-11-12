@@ -3,21 +3,20 @@
  *  1. every new file in recordings/ (any format) becomes the next speaker-NN.wav, scrubbed of all
  *     metadata, and the original goes to the Trash;
  *  2. the anonymity check runs on everything staged;
- *  3. it's committed as "Voicebench" at midnight UTC and pushed (the pre-push check runs again).
+ *  3. it's committed and pushed (the pre-push check runs again).
  * Any failure stops it before anything is committed or pushed. Then run the workflow (Voicebench in
  * Outpost, or `bun run bench`): it transcribes the new recordings with every model and publishes results.
  *
  *   bun run publish
  */
-import { NEUTRAL_EMAIL, NEUTRAL_NAME } from '@bench/anonymity-identity'
 import { ROOT, addRecording, newRecordings } from '@bench/recordings'
 import { execFileSync } from 'node:child_process'
 import { renameSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, join } from 'node:path'
 
-function run(command: string, argumentsGiven: string[], environment: Record<string, string> = {}): void {
-    execFileSync(command, argumentsGiven, { cwd: ROOT, stdio: 'inherit', env: { ...process.env, ...environment } })
+function run(command: string, argumentsGiven: string[]): void {
+    execFileSync(command, argumentsGiven, { cwd: ROOT, stdio: 'inherit' })
 }
 
 const added: string[] = []
@@ -32,8 +31,6 @@ for (const original of newRecordings()) {
 if (!added.length) throw new Error('No new recordings in recordings/')
 run('git', ['add', '--all', 'recordings'])
 run('bun', ['bench/anonymity.ts', '--staged'])
-const date = `${new Date().toISOString().slice(0, 10)}T00:00:00+0000`
-const neutral = { GIT_AUTHOR_NAME: NEUTRAL_NAME, GIT_AUTHOR_EMAIL: NEUTRAL_EMAIL, GIT_AUTHOR_DATE: date, GIT_COMMITTER_NAME: NEUTRAL_NAME, GIT_COMMITTER_EMAIL: NEUTRAL_EMAIL, GIT_COMMITTER_DATE: date }
-run('git', ['commit', '-m', `Add ${added.length === 1 ? 'a recording' : `${added.length} recordings`}`], neutral)
+run('git', ['commit', '-m', `Add ${added.length === 1 ? 'a recording' : `${added.length} recordings`}`])
 run('git', ['push'])
 console.log('Published. Run the workflow next (Voicebench in Outpost, or bun run bench) to update the results.')

@@ -39,8 +39,7 @@ history). Anything it doesn't explicitly allow fails:
   region, device or anything else.
 - **Speech**: words a speaker said that aren't in the script (a name, a place) block the commit until
   someone listens and marks them harmless.
-- **Commits** that carry participant data are made as "Voicebench" at midnight UTC, so they show no name,
-  email, time of day or timezone. Commit messages may not contain emails, phone numbers or links.
+- **Commit messages** may not contain emails, phone numbers or links.
 
 ### Publishing recordings
 
