@@ -1,6 +1,6 @@
 {
   "benchmark": "voicebench",
-  "date": "2026-11-12T10:41:57.366Z",
+  "date": "2026-11-12T11:13:00.804Z",
   "engines": {
     "crispasr": "unknown",
     "harness": "bun 1.4.4",
@@ -283,16 +283,16 @@
         }
       ],
       "id": "parakeet-tdt-0.6b-v3",
-      "latencyMaxMs": 266,
-      "latencyMedianMs": 65,
-      "latencyP90Ms": 85,
+      "latencyMaxMs": 133,
+      "latencyMedianMs": 64,
+      "latencyP90Ms": 81,
       "licence": "CC-BY-4.0",
-      "loadSeconds": 3.4,
+      "loadSeconds": 0.4,
       "maker": "NVIDIA",
       "missing": [],
       "mode": "whole utterance",
       "name": "Parakeet TDT 0.6B v3",
-      "peakMemoryGigabytes": 0.7,
+      "peakMemoryGigabytes": 0.69,
       "reasons": [
         {
           "area": "Accuracy",
@@ -303,17 +303,17 @@
         },
         {
           "area": "Typical wait",
-          "points": 23.1,
-          "score": 92,
+          "points": 23.2,
+          "score": 93,
           "weight": 25,
-          "why": "0.07 s typical wait"
+          "why": "0.06 s typical wait"
         },
         {
           "area": "Slow wait",
           "points": 15,
           "score": 100,
           "weight": 15,
-          "why": "0.09 s for the slowest 1 in 10"
+          "why": "0.08 s for the slowest 1 in 10"
         }
       ],
       "score": 98,
@@ -658,11 +658,11 @@
         }
       ],
       "id": "qwen3-asr-0.6b",
-      "latencyMaxMs": 205,
-      "latencyMedianMs": 73,
-      "latencyP90Ms": 137,
+      "latencyMaxMs": 244,
+      "latencyMedianMs": 83,
+      "latencyP90Ms": 163,
       "licence": "Apache-2.0",
-      "loadSeconds": 1.2,
+      "loadSeconds": 1.1,
       "maker": "Qwen",
       "missing": [],
       "mode": "whole utterance",
@@ -678,20 +678,20 @@
         },
         {
           "area": "Typical wait",
-          "points": 22.2,
-          "score": 89,
+          "points": 21.3,
+          "score": 85,
           "weight": 25,
-          "why": "0.07 s typical wait"
+          "why": "0.08 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 15,
-          "score": 100,
+          "points": 14.6,
+          "score": 97,
           "weight": 15,
-          "why": "0.14 s for the slowest 1 in 10"
+          "why": "0.16 s for the slowest 1 in 10"
         }
       ],
-      "score": 97,
+      "score": 96,
       "sizeGigabytes": 1.02,
       "source": "https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF",
       "strengths": [
