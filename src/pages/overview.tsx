@@ -12,17 +12,10 @@ import {
     TabsTrigger,
     TradeoffChart,
 } from '@kevinschaich/components'
-import { BENCH, FILTERS, MODELS, type ModelSummary, RUN, percent, sampleSentence, seconds } from '@site/data'
+import { BENCH, FILTERS, TABS, MODELS, type ModelSummary, RUN, percent, sampleSentence, seconds } from '@site/data'
 import { Method } from '@site/pages/method'
 import { TakePart } from '@site/pages/take-part'
 import { useEffect, useState } from 'react'
-
-const TABS = [
-    { id: 'results', label: 'Results' },
-    { id: 'tradeoff', label: 'Accuracy vs. speed' },
-    { id: 'method', label: 'How we test' },
-    { id: 'take-part', label: 'Take part' },
-]
 
 const COLUMNS: LeaderboardColumn<ModelSummary>[] = [
     {
@@ -52,11 +45,14 @@ const COLUMNS: LeaderboardColumn<ModelSummary>[] = [
     },
 ]
 
-function tabFromHash(): string {
-    if (typeof location === 'undefined') return TABS[0].id
-    const id = location.hash.replace(/^#/, '')
-    return TABS.some(tab => tab.id === id) ? id : TABS[0].id
+/** The tab a path under BENCH.path names; the first tab is the bench's root. */
+export function tabFromPath(path: string): string | undefined {
+    const id = path.replace(BENCH.path, '').replace(/\/$/, '')
+    if (!id) return TABS[0].id
+    return TABS.some(tab => tab.id === id) ? id : undefined
 }
+
+const tabPath = (id: string): string => (id === TABS[0].id ? BENCH.path : `${BENCH.path}${id}/`)
 
 /** One row of filters per category, each a one-of-a-few choice. */
 function Filters({ chosen, choose }: { chosen: Record<string, string>; choose: (filter: string, option: string) => void }) {
@@ -77,20 +73,24 @@ function Filters({ chosen, choose }: { chosen: Record<string, string>; choose: (
     )
 }
 
-export function Overview() {
-    const [tab, setTab] = useState(TABS[0].id)
+export function Overview({ initialTab }: { initialTab: string }) {
+    const [tab, setTab] = useState(initialTab)
     const [chosen, setChosen] = useState<Record<string, string>>(Object.fromEntries(FILTERS.map(filter => [filter.id, 'all'])))
     const shown = MODELS.filter(model => FILTERS.every(filter => filter.options.find(option => option.id === chosen[filter.id])!.matches(model)))
     const choose = (filter: string, option: string) => setChosen(previous => ({ ...previous, [filter]: option }))
     useEffect(() => {
-        setTab(tabFromHash())
-        const onHash = () => setTab(tabFromHash())
-        window.addEventListener('hashchange', onHash)
-        return () => window.removeEventListener('hashchange', onHash)
+        const legacy = location.hash.replace(/^#/, '')
+        if (TABS.some(item => item.id === legacy)) {
+            history.replaceState(null, '', tabPath(legacy))
+            setTab(legacy)
+        }
+        const onPop = () => setTab(tabFromPath(location.pathname) ?? TABS[0].id)
+        window.addEventListener('popstate', onPop)
+        return () => window.removeEventListener('popstate', onPop)
     }, [])
     const select = (id: string) => {
         setTab(id)
-        history.replaceState(null, '', `#${id}`)
+        history.pushState(null, '', tabPath(id))
     }
 
     return (

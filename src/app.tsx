@@ -1,12 +1,13 @@
 import { Byline } from '@kevinschaich/components'
-import { BENCH, MODELS } from '@site/data'
+import { BENCH, MODELS, TABS } from '@site/data'
 import { ModelPage } from '@site/pages/model'
-import { Overview } from '@site/pages/overview'
+import { Overview, tabFromPath } from '@site/pages/overview'
 
-/** The page for a path under BENCH.path: the overview, or one model's page. */
+/** The page for a path under BENCH.path: an overview tab, or one model's page. */
 export function App({ path }: { path: string }) {
     const id = path.replace(BENCH.path, '').replace(/\/$/, '')
-    const model = id ? MODELS.find(candidate => candidate.id === id) : undefined
+    const tab = tabFromPath(path)
+    const model = tab ? undefined : id ? MODELS.find(candidate => candidate.id === id) : undefined
     return (
         <div className="mx-auto flex min-h-svh max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
             <header className="flex flex-wrap items-end justify-between gap-3">
@@ -18,7 +19,7 @@ export function App({ path }: { path: string }) {
                 </div>
                 <Byline repo={BENCH.repository} />
             </header>
-            {model ? <ModelPage model={model} /> : <Overview />}
+            {model ? <ModelPage model={model} /> : <Overview initialTab={tab ?? TABS[0].id} />}
         </div>
     )
 }

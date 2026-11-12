@@ -14,6 +14,14 @@ export const BENCH = {
     origin: 'https://darkgrade.com',
 }
 
+/** The overview's tabs; each after the first is its own page at BENCH.path + id. */
+export const TABS = [
+    { id: 'results', label: 'Results' },
+    { id: 'tradeoff', label: 'Accuracy vs. speed' },
+    { id: 'method', label: 'How we test' },
+    { id: 'take-part', label: 'Take part' },
+]
+
 export interface ErrorCounts {
     substitutions: number
     deletions: number
@@ -178,5 +186,8 @@ export function routes(): Route[] {
             },
         })
     )
-    return [overview, ...models]
+    const tabs = TABS.slice(1).map(
+        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${tab.label} | ${BENCH.name} by Darkgrade` })
+    )
+    return [overview, ...tabs, ...models]
 }
