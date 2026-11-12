@@ -1,0 +1,74 @@
+{
+  "detector": "silero-vad 6.2.1",
+  "endOfUtteranceSeconds": 0.5,
+  "utterances": [
+    {
+      "startSeconds": 1.0,
+      "endSeconds": 3.6
+    },
+    {
+      "startSeconds": 4.2,
+      "endSeconds": 5.2
+    },
+    {
+      "startSeconds": 5.8,
+      "endSeconds": 7.3
+    },
+    {
+      "startSeconds": 7.8,
+      "endSeconds": 8.5
+    },
+    {
+      "startSeconds": 9.3,
+      "endSeconds": 16.3
+    },
+    {
+      "startSeconds": 16.9,
+      "endSeconds": 17.9
+    },
+    {
+      "startSeconds": 18.6,
+      "endSeconds": 22.1
+    },
+    {
+      "startSeconds": 22.9,
+      "endSeconds": 24.6
+    },
+    {
+      "startSeconds": 25.2,
+      "endSeconds": 27.1
+    },
+    {
+      "startSeconds": 27.7,
+      "endSeconds": 32.8
+    },
+    {
+      "startSeconds": 33.7,
+      "endSeconds": 35.1
+    },
+    {
+      "startSeconds": 35.6,
+      "endSeconds": 40.9
+    },
+    {
+      "startSeconds": 41.8,
+      "endSeconds": 44.4
+    },
+    {
+      "startSeconds": 45.0,
+      "endSeconds": 45.9
+    },
+    {
+      "startSeconds": 46.9,
+      "endSeconds": 48.4
+    },
+    {
+      "startSeconds": 48.9,
+      "endSeconds": 54.0
+    },
+    {
+      "startSeconds": 54.5,
+      "endSeconds": 55.6
+    }
+  ]
+}

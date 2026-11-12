@@ -1,0 +1,86 @@
+{
+  "detector": "silero-vad 6.2.1",
+  "endOfUtteranceSeconds": 0.5,
+  "utterances": [
+    {
+      "startSeconds": 5.3,
+      "endSeconds": 6.1
+    },
+    {
+      "startSeconds": 6.8,
+      "endSeconds": 8.9
+    },
+    {
+      "startSeconds": 9.8,
+      "endSeconds": 11.0
+    },
+    {
+      "startSeconds": 12.0,
+      "endSeconds": 14.0
+    },
+    {
+      "startSeconds": 15.0,
+      "endSeconds": 15.8
+    },
+    {
+      "startSeconds": 17.0,
+      "endSeconds": 19.0
+    },
+    {
+      "startSeconds": 20.1,
+      "endSeconds": 27.9
+    },
+    {
+      "startSeconds": 28.9,
+      "endSeconds": 30.2
+    },
+    {
+      "startSeconds": 31.2,
+      "endSeconds": 36.7
+    },
+    {
+      "startSeconds": 37.8,
+      "endSeconds": 40.4
+    },
+    {
+      "startSeconds": 41.4,
+      "endSeconds": 42.9
+    },
+    {
+      "startSeconds": 44.0,
+      "endSeconds": 44.9
+    },
+    {
+      "startSeconds": 46.1,
+      "endSeconds": 52.2
+    },
+    {
+      "startSeconds": 53.2,
+      "endSeconds": 55.1
+    },
+    {
+      "startSeconds": 56.3,
+      "endSeconds": 62.9
+    },
+    {
+      "startSeconds": 64.1,
+      "endSeconds": 67.8
+    },
+    {
+      "startSeconds": 68.8,
+      "endSeconds": 70.2
+    },
+    {
+      "startSeconds": 71.4,
+      "endSeconds": 73.7
+    },
+    {
+      "startSeconds": 75.0,
+      "endSeconds": 81.6
+    },
+    {
+      "startSeconds": 82.8,
+      "endSeconds": 84.5
+    }
+  ]
+}

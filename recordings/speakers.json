@@ -1,1 +1,42 @@
-[]
+[
+    {
+        "id": "speaker-01",
+        "file": "speaker-01.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-02",
+        "file": "speaker-02.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-03",
+        "file": "speaker-03.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-04",
+        "file": "speaker-04.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-05",
+        "file": "speaker-05.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-06",
+        "file": "speaker-06.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-07",
+        "file": "speaker-07.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-08",
+        "file": "speaker-08.wav",
+        "publishAudio": true
+    }
+]
