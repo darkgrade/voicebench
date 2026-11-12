@@ -27,6 +27,37 @@ checksum of each model file and recording, so a run can be reproduced exactly.
 
 Recordings are anonymous (`speaker-01` …). Audio is published only for speakers who agreed to it.
 
+## Privacy
+
+Volunteers stay anonymous, and a check enforces it before every commit and push (and in CI over all
+history). Anything it doesn't explicitly allow fails:
+
+- **Recordings** are rewritten as bare WAVs with no tags, so the phone's model, OS, recording ID, creation
+  time and location never enter the repo. Originals are never copied. Audio is published only for
+  speakers who agreed to it.
+- **Names**: files are `speaker-01` …; speaker details are limited to an age range, a broad accent region
+  and a device model, chosen from fixed lists.
+- **Speech**: words a speaker said that aren't in the script (a name, a place) block the commit until
+  someone listens and marks them harmless.
+- **Commits** that carry participant data are made as "Voicebench" at midnight UTC, so they show no name,
+  email, time of day or timezone. Commit messages may not contain emails, phone numbers or links.
+
+### Adding a recording
+
+```sh
+bun install                                              # once: switches on the checks
+bun run recordings:add -- ~/Downloads/recording.m4a --age 30–49 --accent "US Midwest" --device "iPhone 15"
+# add --publish only if the speaker agreed to their audio being published
+bun run bench                                            # transcribe it with every model
+git add recordings results                               # audio is only added with --publish: git add -f recordings/speaker-NN.wav
+bun run recordings:commit -- "Add a recording"           # never plain `git commit` for these
+git push
+```
+
+Then delete the original file. If a check fails, fix what it names. Don't bypass it with `--no-verify`:
+once something identifying is pushed, it can't be taken back. Add recordings only from a Mac with the
+checks on, never through GitHub's web upload.
+
 ## Run locally
 
 ```sh
