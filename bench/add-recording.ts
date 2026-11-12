@@ -2,9 +2,9 @@
  * Adds a volunteer's recording without letting anything identifying into the repo. The original file
  * is only read, never copied: its audio is decoded and rewritten as a bare 16-bit mono WAV (no title,
  * location, device, owner, dates or any other tag), named by the next speaker number, and listed in
- * recordings/speakers.json with only what the volunteer chose to share.
+ * recordings/speakers.json with nothing about the person.
  *
- *   bun run recordings:add -- <original file> [--age 30–49] [--accent "US Midwest"] [--device "iPhone 15"] [--publish]
+ *   bun run recordings:add -- <original file> [--publish]
  *
  * --publish only when the volunteer agreed to their audio being published; scores are published either way.
  */
@@ -13,14 +13,9 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-function option(name: string): string | undefined {
-    const index = process.argv.indexOf(name)
-    return index === -1 ? undefined : process.argv[index + 1]
-}
-
 const original = process.argv[2]
 if (!original || original.startsWith('--') || !existsSync(original)) {
-    console.error('usage: bun run recordings:add -- <original file> [--age 30–49] [--accent "US Midwest"] [--device "iPhone 15"] [--publish]')
+    console.error('usage: bun run recordings:add -- <original file> [--publish]')
     process.exit(2)
 }
 
@@ -41,9 +36,6 @@ execFileSync('ffmpeg', [
 const speaker: Speaker = {
     id,
     file,
-    ...(option('--age') ? { ageRange: option('--age') } : {}),
-    ...(option('--accent') ? { accent: option('--accent') } : {}),
-    ...(option('--device') ? { device: option('--device') } : {}),
     publishAudio: process.argv.includes('--publish'),
 }
 writeFileSync(join(RECORDINGS_DIRECTORY, 'speakers.json'), `${JSON.stringify([...speakers, speaker], null, 4)}\n`)

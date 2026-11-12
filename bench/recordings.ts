@@ -16,14 +16,11 @@ const UTTERANCE_FINDER = join(ROOT, 'bench', 'runners', 'find_utterances.py')
 export const SAMPLE_RATE = 16_000
 export const BYTES_PER_SECOND = SAMPLE_RATE * 2
 
-/** What a participant chose to share. Nothing here may identify them. */
+/** A participant: only a number, their file and whether their audio may be published. */
 export interface Speaker {
     id: string
     /** File name in recordings/, e.g. speaker-01.m4a. */
     file: string
-    ageRange?: string
-    accent?: string
-    device?: string
     /** Whether their audio may be published (scores are published for everyone). */
     publishAudio: boolean
 }

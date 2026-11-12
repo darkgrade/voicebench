@@ -35,8 +35,8 @@ history). Anything it doesn't explicitly allow fails:
 - **Recordings** are rewritten as bare WAVs with no tags, so the phone's model, OS, recording ID, creation
   time and location never enter the repo. Originals are never copied. Audio is published only for
   speakers who agreed to it.
-- **Names**: files are `speaker-01` …; speaker details are limited to an age range, a broad accent region
-  and a device model, chosen from fixed lists.
+- **Nothing about the person**: speakers are only `speaker-01`, `speaker-02` …, with no age, accent,
+  region, device or anything else.
 - **Speech**: words a speaker said that aren't in the script (a name, a place) block the commit until
   someone listens and marks them harmless.
 - **Commits** that carry participant data are made as "Voicebench" at midnight UTC, so they show no name,
@@ -46,7 +46,7 @@ history). Anything it doesn't explicitly allow fails:
 
 ```sh
 bun install                                              # once: switches on the checks
-bun run recordings:add -- ~/Downloads/recording.m4a --age 30–49 --accent "US Midwest" --device "iPhone 15"
+bun run recordings:add -- ~/Downloads/recording.m4a
 # add --publish only if the speaker agreed to their audio being published
 bun run bench                                            # transcribe it with every model
 git add recordings results                               # audio is only added with --publish: git add -f recordings/speaker-NN.wav

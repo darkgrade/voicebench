@@ -68,9 +68,9 @@ only; full outputs live in `results/raw/`.
 **People**
 
 - Participants are `speaker-01`, `speaker-02` … in the order their recordings arrive. Never store names, emails or anything else identifying in the repo.
-- `speakers.json` holds only what each person chose to share: age range, accent region, device, and whether their audio may be published (`publishAudio`).
+- `speakers.json` holds only each speaker's number, their file and whether their audio may be published (`publishAudio`). Nothing about the person: no age, accent, region, device or anything else.
 - Publish audio only for speakers with `publishAudio: true`. Scores are published for everyone who sent a recording.
-- Add a recording only with `bun run recordings:add -- <file> [--age …] [--accent …] [--device …] [--publish]`. It never copies the original: it rewrites the audio as a bare 16-bit mono WAV with no tags, so the phone's model, OS build, recording ID, creation time and location don't come along. Keep originals outside the repo and delete them when done.
+- Add a recording only with `bun run recordings:add -- <file> [--publish]`. It never copies the original: it rewrites the audio as a bare 16-bit mono WAV with no tags, so the phone's model, OS build, recording ID, creation time and location don't come along. Keep originals outside the repo and delete them when done.
 - Commit anything in `recordings/` or `results/` only with `bun run recordings:commit -- "<message>"`, which commits as "Voicebench <noreply@darkgrade.com>" at midnight UTC, so no name, email, time of day or timezone can be matched to when someone sent their file.
 - `bench/anonymity.ts` enforces all of this as an allowlist, in the pre-commit and pre-push hooks (`.githooks/`, switched on by `bun install`) and in CI over every commit in history. If it fails, fix the cause; never bypass it with `--no-verify`, and never weaken a rule to get a commit through. Once something identifying is pushed it can't be taken back.
 - Words a speaker said that aren't in the script (a name, a place) fail the check until someone listens and records them as harmless in `recordings/reviewed-speech.json`. If they do identify someone, cut that part from the audio before adding it.

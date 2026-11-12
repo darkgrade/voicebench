@@ -15,8 +15,8 @@
  *  - A WAV is exactly RIFF/WAVE with a PCM "fmt " chunk and one "data" chunk, nothing before, between
  *    or after (no LIST/INFO, bext, iXML, ID3, XMP, cue, JUNK …), and is only committed for a speaker
  *    whose publishAudio is true.
- *  - speakers.json and the utterance files match a strict schema: only known keys, ids like speaker-01,
- *    ages and accents from fixed lists, devices from a short model-name pattern (no free text anywhere).
+ *  - speakers.json and the utterance files match a strict schema: only known keys, ids like speaker-01;
+ *    speakers carry only an id, a file name and publishAudio: nothing about the person, no free text.
  *  - Results: speaker entries carry only allowed keys, and no speaker said words outside the script that
  *    most models agree they heard (a volunteer saying their name, a place …) unless a person reviewed
  *    them in recordings/reviewed-speech.json.
@@ -34,42 +34,8 @@ import { execFileSync } from 'node:child_process'
 
 type Problem = string
 
-const AGE_RANGES = ['18–29', '30–49', '50–69', '70+']
-/** Broad regions only, never a town or anything narrower. Extend deliberately. */
-const ACCENTS = [
-    'US Northeast',
-    'US South',
-    'US Midwest',
-    'US West',
-    'Canada',
-    'UK England',
-    'UK Scotland',
-    'UK Wales',
-    'Northern Ireland',
-    'Ireland',
-    'Australia',
-    'New Zealand',
-    'South Africa',
-    'India',
-    'Pakistan',
-    'Philippines',
-    'Singapore',
-    'Nigeria',
-    'Kenya',
-    'Caribbean',
-    'Latin America',
-    'Western Europe',
-    'Eastern Europe',
-    'Nordics',
-    'Middle East',
-    'East Asia',
-    'Southeast Asia',
-    'Other',
-]
-/** A phone or computer model, e.g. "iPhone 15 Pro", "Pixel 8", "MacBook Air": letters, model numbers, short. */
-const DEVICE = /^(iPhone|iPad|Pixel|Galaxy|OnePlus|Android phone|MacBook Air|MacBook Pro|iMac|Mac|Windows laptop|Other)( [A-Za-z0-9+]{1,8}){0,3}$/
 const SPEAKER_ID = /^speaker-\d{2}$/
-const SPEAKER_KEYS = ['id', 'file', 'ageRange', 'accent', 'device', 'publishAudio']
+const SPEAKER_KEYS = ['id', 'file', 'publishAudio']
 const RESULT_SPEAKER_KEYS = [...SPEAKER_KEYS, 'audioSeconds', 'utterances', 'recordingSha256']
 const RECORDING_NAMES = [/^recordings\/speakers\.json$/, /^recordings\/reviewed-speech\.json$/, /^recordings\/speaker-\d{2}\.utterances\.json$/, /^recordings\/speaker-\d{2}\.wav$/, /^recordings\/\.gitkeep$/]
 const MEDIA = /\.(wav|wave|m4a|mp3|mp4|aac|aif|aiff|caf|flac|ogg|oga|opus|webm|wma|amr|3gp|mov|m4v|avi|mkv|heic|heif|tif|tiff|raw|dng)$/i
@@ -168,9 +134,6 @@ function checkSpeaker(where: string, speaker: Record<string, unknown>, allowedKe
     for (const key of Object.keys(speaker)) if (!allowedKeys.includes(key)) problems.push(`${where}: key "${key}" isn't allowed`)
     if (typeof speaker.id !== 'string' || !SPEAKER_ID.test(speaker.id)) problems.push(`${where}: id must look like speaker-01`)
     if (speaker.file !== undefined && !(typeof speaker.file === 'string' && speaker.file === `${speaker.id}.wav`)) problems.push(`${where}: file must be "${speaker.id}.wav"`)
-    if (speaker.ageRange !== undefined && !AGE_RANGES.includes(String(speaker.ageRange))) problems.push(`${where}: ageRange must be one of ${AGE_RANGES.join(', ')}`)
-    if (speaker.accent !== undefined && !ACCENTS.includes(String(speaker.accent))) problems.push(`${where}: accent must be one of the broad regions in bench/anonymity.ts`)
-    if (speaker.device !== undefined && !(typeof speaker.device === 'string' && DEVICE.test(speaker.device))) problems.push(`${where}: device must be a plain model name like "iPhone 15 Pro"`)
     if (typeof speaker.publishAudio !== 'boolean') problems.push(`${where}: publishAudio must be true or false`)
     if (allowedKeys === RESULT_SPEAKER_KEYS) {
         if (speaker.audioSeconds !== undefined && typeof speaker.audioSeconds !== 'number') problems.push(`${where}: audioSeconds must be a number`)

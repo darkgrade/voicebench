@@ -60,9 +60,6 @@ export interface ModelSummary {
 
 export interface Speaker {
     id: string
-    ageRange?: string
-    accent?: string
-    device?: string
     audioSeconds?: number
 }
 
