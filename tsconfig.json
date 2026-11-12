@@ -12,6 +12,7 @@
         "isolatedModules": true,
         "types": ["node", "bun", "vite/client"],
         "paths": {
+            "outpost-workflows": ["../outpost/workflows/index.ts"],
             "@bench/*": ["./bench/*"],
             "@site/*": ["./src/*"],
             "@results/*": ["./results/*"]
