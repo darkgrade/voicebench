@@ -1,30 +1,54 @@
-import { BENCH, MODELS, TABS } from '@site/data'
-import { ModelPage } from '@site/pages/model'
-import { Overview, tabFromPath } from '@site/pages/overview'
+import { BENCH, TABS } from '@site/data'
+import { Loading, Page, Shell, tabFromPath, useTab } from '@site/kit/shell'
+import { MethodView, TakePartView } from '@site/views/method'
+import { StoryView } from '@site/views/story'
+import { TableView } from '@site/views/table'
+import { type ComponentType, lazy, Suspense, useEffect, useState } from 'react'
 
-/** The page for a path under BENCH.path: an overview tab, or one model's page. */
-export function App({ path }: { path: string }) {
-    const id = path.replace(BENCH.path, '').replace(/\/$/, '')
-    const tab = tabFromPath(path)
-    const model = tab ? undefined : id ? MODELS.find(candidate => candidate.id === id) : undefined
+/** A view's props: how it opens another view, optionally at a query (a speaker, a model, a line). */
+export interface ViewProps {
+    onOpen: (tab: string, query?: string) => void
+}
+
+const view = (load: () => Promise<{ default: ComponentType<ViewProps> }>) => lazy(load)
+/** Views whose code loads when they are first opened. */
+const LATER: Record<string, ComponentType<ViewProps>> = {
+    listen: view(() => import('@site/views/listen')),
+    words: view(() => import('@site/views/words')),
+    tradeoff: view(() => import('@site/views/field')),
+    compare: view(() => import('@site/views/compare')),
+}
+
+/** False while prerendering and for the first render in the browser, so a view that loads later never suspends the prerendered page. */
+function useBrowser(): boolean {
+    const [browser, setBrowser] = useState(false)
+    useEffect(() => {
+        setBrowser(true)
+    }, [])
+    return browser
+}
+
+/** The overview: the story and the other views, each at its own path under BENCH.path. */
+export function Overview({ path }: { path: string }) {
+    const [tab, select] = useTab(BENCH, TABS, tabFromPath(BENCH, TABS, path) ?? TABS[0].id)
+    const browser = useBrowser()
+    const Later = LATER[tab]
     return (
-        <div className="mx-auto flex min-h-svh max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
-            <header className="flex flex-wrap items-end justify-between gap-3">
-                <div className="min-w-0">
-                    <h1><a href={BENCH.path} className="font-heading text-2xl font-semibold tracking-tight hover:underline">
-                        {BENCH.name}
-                    </a></h1>
-                    <p className="text-sm text-muted-foreground">{BENCH.tagline}</p>
-                </div>
-                <span className="ks-byline">
-                    <a href="https://darkgrade.com/">By Darkgrade</a>
-                    {' · '}
-                    <a href={`https://github.com/${BENCH.repository}`} target="_blank" rel="noopener">
-                        code on github
-                    </a>
-                </span>
-            </header>
-            {model ? <ModelPage model={model} /> : <Overview initialTab={tab ?? TABS[0].id} />}
-        </div>
+        <Shell bench={BENCH} tabs={TABS} tab={tab} onTab={select}>
+            {tab === 'story' && <StoryView onOpen={select} />}
+            {tab === 'results' && (
+                <Page>
+                    <TableView />
+                </Page>
+            )}
+            {tab === 'method' && <MethodView />}
+            {tab === 'take-part' && <TakePartView />}
+            {Later && !browser && <Loading />}
+            {Later && browser && (
+                <Suspense fallback={<Loading />}>
+                    <Later onOpen={select} />
+                </Suspense>
+            )}
+        </Shell>
     )
 }

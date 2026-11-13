@@ -12,3 +12,6 @@ recordings/*
 !recordings/.gitkeep
 # Full model output and engine logs: rewritten every run.
 results/raw/
+# Built for the site from results/ and recordings/ (scripts/build-data.ts), never committed.
+public/data/
+src/facts.json
