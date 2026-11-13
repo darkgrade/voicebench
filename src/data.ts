@@ -165,7 +165,7 @@ export function routes(): Route[] {
         title: `${BENCH.name} | Darkgrade`,
         description: BENCH.tagline,
         card: {
-            eyebrow: 'Voicebench by Darkgrade',
+            eyebrow: 'Voicebench',
             heading: BENCH.tagline,
             stats: best ? [{ label: 'Top model', value: best.name }, { label: 'Score', value: String(best.score ?? '–') }] : [],
         },

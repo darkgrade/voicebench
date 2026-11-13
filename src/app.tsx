@@ -1,4 +1,3 @@
-import { Byline } from '@kevinschaich/components'
 import { BENCH, MODELS, TABS } from '@site/data'
 import { ModelPage } from '@site/pages/model'
 import { Overview, tabFromPath } from '@site/pages/overview'
@@ -17,7 +16,13 @@ export function App({ path }: { path: string }) {
                     </a>
                     <p className="text-sm text-muted-foreground">{BENCH.tagline}</p>
                 </div>
-                <Byline repo={BENCH.repository} />
+                <span className="ks-byline">
+                    <a href="https://darkgrade.com/">By Darkgrade</a>
+                    {' · '}
+                    <a href={`https://github.com/${BENCH.repository}`} target="_blank" rel="noopener">
+                        code on github
+                    </a>
+                </span>
             </header>
             {model ? <ModelPage model={model} /> : <Overview initialTab={tab ?? TABS[0].id} />}
         </div>

@@ -33,26 +33,41 @@ const FONTS = [
 
 const escape = (text: string): string => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-/** The preview card: the bench, the page's subject and its headline numbers, white on black. */
+/**
+ * The preview card, Darkgrade's look: obsidian with a gold accent. The heading and numbers sit in the
+ * middle with wide margins, because chat apps crop and zoom previews from the edges in.
+ */
 async function card(route: Route): Promise<Buffer> {
+    const text = (children: string, style: Record<string, unknown>) => ({ type: 'div', props: { style: { display: 'flex', ...style }, children } })
     const element = {
         type: 'div',
         props: {
-            style: { width: 1200, height: 630, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 72, background: '#09090b', color: '#fafafa', fontFamily: 'Public Sans' },
+            style: {
+                width: 1200,
+                height: 630,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 44,
+                padding: '0 120px',
+                background: 'radial-gradient(circle at 85% 0%, #2a2216 0%, #0b0b0c 60%)',
+                color: '#eae6dc',
+                fontFamily: 'Public Sans',
+            },
             children: [
-                { type: 'div', props: { style: { fontSize: 32, color: '#a1a1aa' }, children: route.card.eyebrow } },
-                { type: 'div', props: { style: { fontSize: route.card.heading.length > 40 ? 64 : 84, fontWeight: 700, lineHeight: 1.05 }, children: route.card.heading } },
+                text(`DARKGRADE  ·  ${route.card.eyebrow.toUpperCase()}`, { fontSize: 22, letterSpacing: 6, color: '#f4c66e' }),
+                text(route.card.heading, { fontSize: route.card.heading.length > 44 ? 54 : 68, fontWeight: 700, lineHeight: 1.1, maxWidth: 960 }),
                 {
                     type: 'div',
                     props: {
-                        style: { display: 'flex', gap: 64 },
+                        style: { display: 'flex', gap: 24 },
                         children: route.card.stats.map(stat => ({
                             type: 'div',
                             props: {
-                                style: { display: 'flex', flexDirection: 'column' },
+                                style: { display: 'flex', flexDirection: 'column', gap: 6, padding: '18px 26px', border: '1px solid #3a3326', borderRadius: 16, background: 'rgba(244,198,110,0.06)' },
                                 children: [
-                                    { type: 'div', props: { style: { fontSize: 24, color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: 2 }, children: stat.label } },
-                                    { type: 'div', props: { style: { fontSize: 48, fontWeight: 700 }, children: stat.value } },
+                                    text(stat.label.toUpperCase(), { fontSize: 18, letterSpacing: 3, color: '#9c968a' }),
+                                    text(stat.value, { fontSize: 38, fontWeight: 700, color: '#f4c66e' }),
                                 ],
                             },
                         })),
