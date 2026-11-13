@@ -1,9 +1,10 @@
 /**
- * The published results, bundled at build time: results/voicebench.json for the overview and
- * results/models/<id>.json for each model's page. Every page is prerendered from these, so the site
- * needs no server and search engines see the numbers.
+ * The published results' summary, bundled at build time: results/voicebench.json. Every page is
+ * prerendered from it, so the site needs no server and search engines see the numbers. Each model's
+ * transcripts are in src/details.ts (its own page) and src/heard.ts (the overview's views).
  */
 import results from '@results/voicebench.json'
+import type { Aligned } from '@site/spoken'
 
 export const BENCH = {
     name: 'Voicebench',
@@ -16,13 +17,28 @@ export const BENCH = {
     subject: 'Local speech-to-text benchmark on real voices',
 }
 
-/** The overview's tabs; each after the first is its own page at BENCH.path + id. */
+/** The overview's views; each after the first is its own page at BENCH.path + id. */
 export const TABS = [
-    { id: 'results', label: 'Results' },
-    { id: 'tradeoff', label: 'Accuracy vs. speed' },
-    { id: 'method', label: 'How we test' },
+    { id: 'story', label: 'Story' },
+    { id: 'listen', label: 'Listen' },
+    { id: 'words', label: 'Words' },
+    { id: 'tradeoff', label: 'Field' },
+    { id: 'compare', label: 'Compare' },
+    { id: 'results', label: 'Table' },
+    { id: 'method', label: 'Method' },
     { id: 'take-part', label: 'Take part' },
 ]
+
+/** What each view is, for its page title and description. */
+const TAB_PAGES: Record<string, { title: string; description: string }> = {
+    listen: { title: 'Listen along', description: "Play a real person reading the script and watch every speech model's text arrive, line by line, with each mistake marked." },
+    words: { title: 'The words models mishear', description: 'The script word by word: which words speech models get wrong, what they write instead, and for which speakers.' },
+    tradeoff: { title: 'Accuracy vs. speed', description: 'Every speech model by how many words it gets wrong and how long you wait for the text.' },
+    compare: { title: 'Compare two models', description: 'Two speech models side by side: their scores, each speaker, every wait, and the words only one of them missed.' },
+    results: { title: 'Results', description: 'Every speech model ranked by score, with word errors, waits, download size and licence.' },
+    method: { title: 'How we test', description: 'The script, the recordings, the settings and the hardware behind every score, and how to repeat the run.' },
+    'take-part': { title: 'Take part', description: 'Read the script into your phone and add your voice to the benchmark.' },
+}
 
 export interface ErrorCounts {
     substitutions: number
@@ -82,10 +98,7 @@ export interface RunDetails {
     models: ModelSummary[]
 }
 
-export type AlignedWord =
-    | { kind: 'same' | 'substituted'; expected: string; heard: string }
-    | { kind: 'missed'; expected: string }
-    | { kind: 'added'; heard: string }
+export type AlignedWord = Aligned
 
 export interface ModelDetail {
     id: string
@@ -113,9 +126,10 @@ export function sampleSentence(): string {
 }
 export const MODELS = RUN.models.filter(model => !model.error && model.wordErrorRate !== undefined)
 
-const details = import.meta.glob<ModelDetail>('../results/models/*.json', { eager: true, import: 'default' })
-export function modelDetail(id: string): ModelDetail | undefined {
-    return details[`../results/models/${id}.json`]
+/** The model a path names, if it is a model's own page. */
+export function modelFromPath(path: string): ModelSummary | undefined {
+    const id = path.replace(BENCH.path, '').replace(/\/$/, '')
+    return id ? MODELS.find(candidate => candidate.id === id) : undefined
 }
 
 /** The categories the overview filters by, each a one-of-a-few choice. */
@@ -177,7 +191,7 @@ export function routes(): Route[] {
         })
     )
     const tabs = TABS.slice(1).map(
-        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${tab.label} | ${BENCH.name} by Darkgrade` })
+        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${TAB_PAGES[tab.id].title} | ${BENCH.name} by Darkgrade`, description: TAB_PAGES[tab.id].description })
     )
     return [overview, ...tabs, ...models]
 }

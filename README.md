@@ -28,6 +28,11 @@ checksum of each model file and recording, so a run can be reproduced exactly.
 
 Recordings are anonymous (`speaker-01` …). Audio is published only for speakers who agreed to it.
 
+The site shows the results as a story (every word, as each model heard it from each speaker, as a point of
+light), the recordings themselves with every model's text arriving as it did in the run, the words models
+miss most, a chart of accuracy against speed, any two models side by side, and a table. Each model has its
+own page.
+
 ## Privacy
 
 Volunteers stay anonymous, and a check enforces it before every commit and push (and in CI over all

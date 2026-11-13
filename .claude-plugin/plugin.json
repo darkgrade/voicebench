@@ -1,7 +1,7 @@
 {
   "name": "voicebench",
   "title": "Voicebench",
-  "description": "Speech-to-text models on real people's recordings: the results, and runs of the benchmark on this Mac, live.",
+  "description": "Speech-to-text models on real people's recordings: runs of the benchmark on this Mac, live, to start and rerun.",
   "keywords": ["benchmark", "speech", "app"],
   "workflows": ["voicebench"],
   "worker": true,
