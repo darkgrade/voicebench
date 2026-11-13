@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@fontsource/fragment-mono": "^5.3.0",
-        "@kevinschaich/components": "^0.8.1",
+        "@kevinschaich/components": "^0.8.2",
         "lucide-react": "^1.72.0",
         "react": "^19.3.1",
         "react-dom": "^19.3.1"

@@ -51,10 +51,6 @@ async function card(route: Route): Promise<Buffer> {
         address,
         background: await backdropDataURI(),
     })
-    // satori paints absolutely positioned boxes after in-flow ones, which would bury the words under the
-    // backdrop; positioning the content blocks too makes everything stack in document order.
-    const tree = element as unknown as { props: { children: ({ props: { style: Record<string, unknown> } } | null | false)[] } }
-    for (const child of tree.props.children) if (child && !child.props.style.position) child.props.style.position = 'relative'
     const svg = await satori(element, { width: 1200, height: 630, fonts: FONTS })
     return Buffer.from(new Resvg(svg).render().asPng())
 }
