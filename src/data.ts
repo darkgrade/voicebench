@@ -191,7 +191,7 @@ export function routes(): Route[] {
         })
     )
     const tabs = TABS.slice(1).map(
-        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${TAB_PAGES[tab.id].title} | ${BENCH.name} by Darkgrade`, description: TAB_PAGES[tab.id].description })
+        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${TAB_PAGES[tab.id].title} | ${BENCH.name} by Darkgrade`, description: TAB_PAGES[tab.id].description, card: { heading: TAB_PAGES[tab.id].title, sub: TAB_PAGES[tab.id].description } })
     )
     return [overview, ...tabs, ...models]
 }
