@@ -171,7 +171,7 @@ export interface Route {
     path: string
     title: string
     description: string
-    card: { eyebrow: string; heading: string; stats: { label: string; value: string }[] }
+    card: { heading: string; sub: string }
 }
 
 export function routes(): Route[] {
@@ -180,30 +180,18 @@ export function routes(): Route[] {
         path: '',
         title: `${BENCH.name} by Darkgrade: ${BENCH.subject}`,
         description: BENCH.tagline,
-        card: {
-            eyebrow: 'Voicebench',
-            heading: BENCH.tagline,
-            stats: best ? [{ label: 'Top model', value: best.name }, { label: 'Score', value: String(best.score ?? '–') }] : [],
-        },
+        card: { heading: BENCH.name, sub: BENCH.tagline },
     }
     const models = MODELS.map(
         (model): Route => ({
             path: `${model.id}/`,
             title: `${model.name} speech recognition benchmark | ${BENCH.name} by Darkgrade`,
             description: `${model.name} by ${model.maker} scores ${model.score ?? '–'}/100 at transcribing real people: ${percent(model.wordErrorRate)} word errors, ${seconds(model.latencyMedianMs)} typical wait.`,
-            card: {
-                eyebrow: `Voicebench · ${model.maker}`,
-                heading: model.name,
-                stats: [
-                    { label: 'Score', value: `${model.score ?? '–'}/100` },
-                    { label: 'Word errors', value: percent(model.wordErrorRate) },
-                    { label: 'Typical wait', value: seconds(model.latencyMedianMs) },
-                ],
-            },
+            card: { heading: model.name, sub: `${model.score ?? '–'}/100 · ${percent(model.wordErrorRate)} word errors · ${seconds(model.latencyMedianMs)} wait` },
         })
     )
     const tabs = TABS.slice(1).map(
-        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${TAB_PAGES[tab.id].title} | ${BENCH.name} by Darkgrade`, description: TAB_PAGES[tab.id].description })
+        (tab): Route => ({ ...overview, path: `${tab.id}/`, title: `${TAB_PAGES[tab.id].title} | ${BENCH.name} by Darkgrade`, description: TAB_PAGES[tab.id].description, card: { heading: TAB_PAGES[tab.id].title, sub: TAB_PAGES[tab.id].description } })
     )
     return [overview, ...tabs, ...models]
 }

@@ -3,6 +3,7 @@
  * description, canonical URL and preview card, and draws each card as a 1200×630 PNG with the
  * benchmark's numbers. Runs after `vite build` and the server build; static output only.
  */
+import { OgCard, backdropDataURI, darkgradeMark } from '@kevinschaich/components/og'
 import { Resvg } from '@resvg/resvg-js'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
@@ -13,7 +14,7 @@ interface Route {
     path: string
     title: string
     description: string
-    card: { eyebrow: string; heading: string; stats: { label: string; value: string }[] }
+    card: { heading: string; sub: string }
 }
 
 const root = resolve(import.meta.dirname, '..')
@@ -27,56 +28,30 @@ const template = readFileSync(join(output, 'index.html'), 'utf8')
 const fonts = createRequire(import.meta.url)
 const font = (weight: number) => readFileSync(fonts.resolve(`@fontsource/public-sans/files/public-sans-latin-${weight}-normal.woff`))
 const FONTS = [
-    { name: 'Public Sans', data: font(400), weight: 400 as const, style: 'normal' as const },
-    { name: 'Public Sans', data: font(700), weight: 700 as const, style: 'normal' as const },
+    { name: 'body', data: font(400), weight: 400 as const, style: 'normal' as const },
+    { name: 'heading', data: font(600), weight: 600 as const, style: 'normal' as const },
+    { name: 'heading', data: font(500), weight: 500 as const, style: 'normal' as const },
+    {
+        name: 'mono',
+        data: readFileSync(fonts.resolve('@fontsource/fragment-mono/files/fragment-mono-latin-400-normal.woff')),
+        weight: 400 as const,
+        style: 'normal' as const,
+    },
 ]
 
 const escape = (text: string): string => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-/**
- * The preview card, Darkgrade's look: obsidian with a gold accent. The heading and numbers sit in the
- * middle with wide margins, because chat apps crop and zoom previews from the edges in.
- */
+/** The preview card: the shared Darkgrade card from @kevinschaich/components, drawn at 1200×630. */
 async function card(route: Route): Promise<Buffer> {
-    const text = (children: string, style: Record<string, unknown>) => ({ type: 'div', props: { style: { display: 'flex', ...style }, children } })
-    const element = {
-        type: 'div',
-        props: {
-            style: {
-                width: 1200,
-                height: 630,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                gap: 44,
-                padding: '0 120px',
-                background: 'radial-gradient(circle at 85% 0%, #2a2216 0%, #0b0b0c 60%)',
-                color: '#eae6dc',
-                fontFamily: 'Public Sans',
-            },
-            children: [
-                text(`DARKGRADE  ·  ${route.card.eyebrow.toUpperCase()}`, { fontSize: 22, letterSpacing: 6, color: '#f4c66e' }),
-                text(route.card.heading, { fontSize: route.card.heading.length > 44 ? 54 : 68, fontWeight: 700, lineHeight: 1.1, maxWidth: 960 }),
-                {
-                    type: 'div',
-                    props: {
-                        style: { display: 'flex', gap: 24 },
-                        children: route.card.stats.map(stat => ({
-                            type: 'div',
-                            props: {
-                                style: { display: 'flex', flexDirection: 'column', gap: 6, padding: '18px 26px', border: '1px solid #3a3326', borderRadius: 16, background: 'rgba(244,198,110,0.06)' },
-                                children: [
-                                    text(stat.label.toUpperCase(), { fontSize: 18, letterSpacing: 3, color: '#9c968a' }),
-                                    text(stat.value, { fontSize: 38, fontWeight: 700, color: '#f4c66e' }),
-                                ],
-                            },
-                        })),
-                    },
-                },
-            ],
-        },
-    }
-    const svg = await satori(element as Parameters<typeof satori>[0], { width: 1200, height: 630, fonts: FONTS })
+    const address = `darkgrade.com${server.BENCH.path}${route.path}`.replace(/\/$/, '')
+    const element = OgCard({
+        logo: { mark: darkgradeMark.dark, name: 'Darkgrade' },
+        main: route.card.heading,
+        sub: route.card.sub,
+        address,
+        background: await backdropDataURI(),
+    })
+    const svg = await satori(element, { width: 1200, height: 630, fonts: FONTS })
     return Buffer.from(new Resvg(svg).render().asPng())
 }
 
