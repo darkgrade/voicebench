@@ -20,7 +20,7 @@ const root = resolve(import.meta.dirname, '..')
 const server = (await import(join(root, '.server', 'server.js'))) as {
     render: (path: string) => string
     routes: () => Route[]
-    BENCH: { path: string; origin: string }
+    BENCH: { name: string; tagline: string; repository: string; path: string; origin: string; subject: string }
 }
 const output = join(root, 'dist', server.BENCH.path)
 const template = readFileSync(join(output, 'index.html'), 'utf8')
@@ -80,6 +80,28 @@ async function card(route: Route): Promise<Buffer> {
     return Buffer.from(new Resvg(svg).render().asPng())
 }
 
+const DARKGRADE = { '@type': 'Organization', name: 'Darkgrade', url: 'https://darkgrade.com/' }
+const home = `${server.BENCH.origin}${server.BENCH.path}`
+
+/** Schema.org data: the bench is a Dataset by Darkgrade with its code on GitHub; each other page is part of it. */
+function structuredData(route: Route, url: string): string {
+    const dataset = {
+        '@type': 'Dataset',
+        '@id': `${home}#dataset`,
+        name: `${server.BENCH.name} by Darkgrade`,
+        alternateName: server.BENCH.subject,
+        description: server.BENCH.tagline,
+        url: home,
+        creator: DARKGRADE,
+        publisher: DARKGRADE,
+        isAccessibleForFree: true,
+        sameAs: `https://github.com/${server.BENCH.repository}`,
+    }
+    if (!route.path) return JSON.stringify({ '@context': 'https://schema.org', ...dataset })
+    return JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: route.title, description: route.description, url, isPartOf: dataset, publisher: DARKGRADE })
+}
+
+const pages: string[] = []
 for (const route of server.routes()) {
     const url = `${server.BENCH.origin}${server.BENCH.path}${route.path}`
     const image = `${server.BENCH.origin}${server.BENCH.path}og/${route.path ? route.path.replace(/\/$/, '') : 'index'}.png`
@@ -92,6 +114,7 @@ for (const route of server.routes()) {
         `<meta property="og:image" content="${image}" />`,
         `<meta property="og:url" content="${url}" />`,
         `<meta name="twitter:card" content="summary_large_image" />`,
+        `<script type="application/ld+json">${structuredData(route, url).replace(/</g, '\\u003c')}</script>`,
     ].join('\n        ')
     const html = template
         .replace(/<title>[\s\S]*?<meta name="twitter:card"[^>]*>/, head)
@@ -99,8 +122,10 @@ for (const route of server.routes()) {
     const file = join(output, route.path, 'index.html')
     mkdirSync(dirname(file), { recursive: true })
     writeFileSync(file, html)
+    pages.push(url)
     const cardFile = join(output, 'og', `${route.path ? route.path.replace(/\/$/, '') : 'index'}.png`)
     mkdirSync(dirname(cardFile), { recursive: true })
     writeFileSync(cardFile, await card(route))
 }
+writeFileSync(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(page => `  <url><loc>${escape(page)}</loc></url>`).join('\n')}\n</urlset>\n`)
 console.log(`prerendered ${server.routes().length} pages`)

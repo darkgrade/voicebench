@@ -1,10 +1,10 @@
-[![Voicebench by kevinschaich](https://kevinschaich.com/og/voicebench.png)](https://kevinschaich.com/project/voicebench/)
+[![Voicebench by Darkgrade](https://darkgrade.com/voicebench/og/index.png)](https://darkgrade.com/voicebench/)
 
 # Voicebench
 
 Which speech model hears real people best, and fastest?
 
-**[Try it →](https://kevinschaich.com/project/voicebench/)**
+**[See the results →](https://darkgrade.com/voicebench/)**
 
 ## How it works
 

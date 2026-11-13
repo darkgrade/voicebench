@@ -11,9 +11,9 @@ export function App({ path }: { path: string }) {
         <div className="mx-auto flex min-h-svh max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
             <header className="flex flex-wrap items-end justify-between gap-3">
                 <div className="min-w-0">
-                    <a href={BENCH.path} className="font-heading text-2xl font-semibold tracking-tight hover:underline">
+                    <h1><a href={BENCH.path} className="font-heading text-2xl font-semibold tracking-tight hover:underline">
                         {BENCH.name}
-                    </a>
+                    </a></h1>
                     <p className="text-sm text-muted-foreground">{BENCH.tagline}</p>
                 </div>
                 <span className="ks-byline">
