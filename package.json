@@ -18,7 +18,8 @@
         "worker": "bun bench/worker.ts"
     },
     "dependencies": {
-        "@kevinschaich/components": "^0.8.0",
+        "@fontsource/fragment-mono": "^5.3.0",
+        "@kevinschaich/components": "^0.8.1",
         "lucide-react": "^1.72.0",
         "react": "^19.3.1",
         "react-dom": "^19.3.1"
