@@ -1,18 +1,18 @@
 {
   "benchmark": "voicebench",
-  "date": "2026-11-12T11:13:00.804Z",
+  "date": "2026-11-17T20:17:16.692Z",
   "engines": {
     "crispasr": "unknown",
     "harness": "bun 1.4.4",
     "llamaServer": "version: 0.9.0-dev (build 12283, commit f3b407ca1)",
     "python": {
-      "mlx": "0.32.2",
-      "mlx-audio": "0.5.3",
-      "qwen-asr": "0.0.6",
-      "silero-vad": "6.2.1",
-      "torch": "2.15.0",
-      "transformers": "5.19.0",
-      "transformers (Musci-ASR)": "4.57.6"
+      "mlx": "not installed",
+      "mlx-audio": "not installed",
+      "qwen-asr": "not installed",
+      "silero-vad": "not installed",
+      "torch": "not installed",
+      "transformers": "not installed",
+      "transformers (Musci-ASR)": "not installed"
     }
   },
   "hardware": {
@@ -89,6 +89,30 @@
         "id": "speaker-08",
         "publishAudio": true,
         "recordingSha256": "13e975059a17a7d8e5bb3395a37b835f714f76d3a83ca4ba3eb134d99c1ee7ac",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 66.05,
+        "file": "speaker-09.wav",
+        "id": "speaker-09",
+        "publishAudio": true,
+        "recordingSha256": "60aecbc38f75730efadfa87e01aa8450baa88c236ab82a88b90ed3c642b4ecf0",
+        "utterances": 19
+      },
+      {
+        "audioSeconds": 85.76,
+        "file": "speaker-10.wav",
+        "id": "speaker-10",
+        "publishAudio": true,
+        "recordingSha256": "a0bfcb4eb50f553caf101a51a6f9e34cbb117cca97b09da84e5f733a3549fec0",
+        "utterances": 20
+      },
+      {
+        "audioSeconds": 80.43,
+        "file": "speaker-11.wav",
+        "id": "speaker-11",
+        "publishAudio": true,
+        "recordingSha256": "8ddc7f2d215c5af610792fd24ee1c233cc531b095c3d0f13cf6b4d1038486e33",
         "utterances": 20
       }
     ],
@@ -248,79 +272,6 @@
       "strengths": [
         "0.9% word errors",
         "0.04 s typical wait"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0094
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0058,
-        "speaker-02": 0,
-        "speaker-03": 0.0058,
-        "speaker-04": 0.0058,
-        "speaker-05": 0.0058,
-        "speaker-06": 0,
-        "speaker-07": 0.0291,
-        "speaker-08": 0.0233
-      },
-      "characterErrorRate": 0.0053,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 5,
-        "insertions": 2,
-        "referenceWords": 1376,
-        "substitutions": 6
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 417894912,
-          "name": "parakeet-tdt-0.6b-v3-q4_k.gguf",
-          "sha256": "addef407ab841eef45739e78920fd8c00e63f78eaa823c490e600e0ab58080a1"
-        }
-      ],
-      "id": "parakeet-tdt-0.6b-v3",
-      "latencyMaxMs": 133,
-      "latencyMedianMs": 64,
-      "latencyP90Ms": 81,
-      "licence": "CC-BY-4.0",
-      "loadSeconds": 0.4,
-      "maker": "NVIDIA",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "Parakeet TDT 0.6B v3",
-      "peakMemoryGigabytes": 0.69,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "0.9% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 23.2,
-          "score": 93,
-          "weight": 25,
-          "why": "0.06 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 15,
-          "score": 100,
-          "weight": 15,
-          "why": "0.08 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 98,
-      "sizeGigabytes": 0.42,
-      "source": "https://huggingface.co/cstr/parakeet-tdt-0.6b-v3-GGUF/resolve/main/parakeet-tdt-0.6b-v3-q4_k.gguf",
-      "strengths": [
-        "0.9% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
@@ -1662,6 +1613,12 @@
       ],
       "withinTarget": 1,
       "wordErrorRate": 0.3924
+    },
+    {
+      "error": "{\"message\":\"The engine did not exit: 92883 /Users/outpost/.cache/darkgrade-bench/toolbench/llama.cpp/llama-server --model /Users/outpost/.cache/darkgrade-bench/toolbench/gguf-models/unsloth__Qwen3.5-4B-GGUF/Qwen3.5-4B-Q4_K_M.gguf --host 127.0.0.1 --port 53303 --no-webui --reasoning off --ctx-size 65536\",\"stack\":\"Error: The engine did not exit: 92883 /Users/outpost/.cache/darkgrade-bench/toolbench/llama.cpp/llama-server --model /Users/outpost/.cache/darkgrade-bench/toolbench/gguf-models/unsloth__Qwen3.5-4B-GGUF/Qwen3.5-4B-Q4_K_M.gguf --host 127.0.0.1 --port 53303 --no-webui --reasoning off --ctx-size 65536\\n    at <anonymous> (/Users/outpost/agents/apps/voicebench/work/voicebench/bench/workflow.ts:151:45)\\n    at processTicksAndRejections (native:7:39)\"}",
+      "id": "parakeet-tdt-0.6b-v3",
+      "maker": "NVIDIA",
+      "name": "Parakeet TDT 0.6B v3"
     }
   ]
 }
