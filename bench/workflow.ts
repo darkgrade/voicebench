@@ -12,7 +12,7 @@
  * "Run without cache" (force) redoes everything.
  */
 import { MODEL_DIRECTORY, type EngineStats, RAW_DIRECTORY, RESULTS_PATH, type SpeakerResults, type UtteranceResult, assignStreamedWords, engineStats, launch, modelRow, runDetails, runningEngines, slice, streamRecording, transcribe } from '@bench/run'
-import { CRISPASR_MODELS, LLAMA_MODELS, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel } from '@bench/models'
+import { CRISPASR_MODELS, LLAMA_MODELS, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel, SPEECH_MODELS } from '@bench/models'
 import { type Recording, ROOT, loadRecordings } from '@bench/recordings'
 import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
@@ -43,7 +43,7 @@ const modelById = (id: string): VoiceModel => {
 /** The model's own files (outside the repo, gigabytes): identified by size and date rather than hashed every run. */
 function modelStamp(model: VoiceModel): string {
     const engine = model.engine
-    const files = engine.kind === 'crispasr' ? [join(CRISPASR_MODELS, engine.file)] : engine.kind === 'python' ? [join(RUNNERS_DIRECTORY, engine.path)] : [join(LLAMA_MODELS, engine.directory, engine.model), join(LLAMA_MODELS, engine.directory, engine.projector)]
+    const files = engine.kind === 'crispasr' ? [join(CRISPASR_MODELS, engine.file)] : engine.kind === 'python' ? [join(SPEECH_MODELS, engine.path)] : [join(LLAMA_MODELS, engine.directory, engine.model), join(LLAMA_MODELS, engine.directory, engine.projector)]
     return files.map(file => (existsSync(file) ? `${file}:${statSync(file).size}:${statSync(file).mtimeMs}` : `${file}:missing`)).join('|')
 }
 

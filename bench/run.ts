@@ -11,7 +11,7 @@
  * Accuracy is pooled over every speaker's words. See AGENTS.md "Bench conventions".
  */
 import { type RunningServer, freePort, startEngine, startServer } from '@bench/engines'
-import { CRISPASR_BINARY, CRISPASR_MODELS, LLAMA_MODELS, LLAMA_SERVER_BINARY, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel } from '@bench/models'
+import { CRISPASR_BINARY, CRISPASR_MODELS, LLAMA_MODELS, LLAMA_SERVER_BINARY, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel, SPEECH_MODELS } from '@bench/models'
 import { BYTES_PER_SECOND, ROOT, SAMPLE_RATE, type Recording, type Utterance, loadRecordings, referenceText, scriptPath } from '@bench/recordings'
 import { type ErrorCounts, align, errorRate, scoreTranscript, sumCounts } from '@bench/scoring'
 import { voiceScore } from '@bench/voice-score'
@@ -173,7 +173,7 @@ export async function launch(model: VoiceModel, logPath: string): Promise<{ serv
     }
     if (engine.kind === 'python') {
         const port = await freePort()
-        const local = join(RUNNERS_DIRECTORY, engine.path)
+        const local = join(SPEECH_MODELS, engine.path)
         const server = await startEngine({
             command: join(RUNNERS_DIRECTORY, engine.environment, 'bin', 'python'),
             arguments: [RUNNER_SCRIPT, '--model', engine.runner, '--path', existsSync(local) ? local : engine.path, '--port', String(port)],
@@ -196,7 +196,7 @@ function modelSizeGigabytes(model: VoiceModel): number {
         engine.kind === 'crispasr'
             ? [join(CRISPASR_MODELS, engine.file)]
             : engine.kind === 'python'
-              ? [join(RUNNERS_DIRECTORY, engine.path)]
+              ? [join(SPEECH_MODELS, engine.path)]
               : [join(LLAMA_MODELS, engine.directory, engine.model), join(LLAMA_MODELS, engine.directory, engine.projector)]
     const bytes = paths.reduce((sum, path) => {
         if (!existsSync(path)) return sum

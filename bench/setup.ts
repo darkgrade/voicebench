@@ -14,6 +14,7 @@ import {
     LLAMA_SERVER_BINARY,
     RUNNERS_DIRECTORY,
     VOICE_MODELS,
+    SPEECH_MODELS,
 } from '@bench/models'
 import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync } from 'node:fs'
@@ -72,7 +73,7 @@ function installModels(): void {
         if (engine.kind === 'python') {
             // Musci-ASR loads by repository id into the Hugging Face cache on first use.
             if (!engine.path.startsWith('bark/')) continue
-            const destination = join(RUNNERS_DIRECTORY, engine.path)
+            const destination = join(SPEECH_MODELS, engine.path)
             if (!existsSync(destination)) run('hf', 'download', engine.source.replace('https://huggingface.co/', ''), '--local-dir', destination)
             continue
         }

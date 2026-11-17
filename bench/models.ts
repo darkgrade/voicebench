@@ -11,10 +11,16 @@ import { join } from 'node:path'
 export const CACHE_DIRECTORY = process.env.BENCH_CACHE ?? join(homedir(), '.cache', 'darkgrade-bench', 'voicebench')
 export const CRISPASR_RELEASE = 'v0.8.53'
 export const CRISPASR_BINARY = join(CACHE_DIRECTORY, 'crispasr', 'crispasr-macos-arm64', 'crispasr')
-export const CRISPASR_MODELS = join(CACHE_DIRECTORY, 'crispasr-models')
+/** Every downloaded model lives on the models drive, by kind (MODELS, default /Volumes/models): speech models in
+ *  speech-to-text, by runtime (gguf for llama.cpp, crispasr, bark, and Hugging Face's own cache for the rest). */
+export const MODELS_DIRECTORY = process.env.MODELS ?? '/Volumes/models'
+export const SPEECH_MODELS = join(MODELS_DIRECTORY, 'speech-to-text')
+export const CRISPASR_MODELS = join(SPEECH_MODELS, 'crispasr')
+// Models loaded by repository name (Musci) come from and download into the drive's Hugging Face cache.
+process.env.HF_HUB_CACHE ??= join(SPEECH_MODELS, 'huggingface', 'hub')
 export const LLAMA_CPP_RELEASE = 'b12283'
 export const LLAMA_SERVER_BINARY = join(CACHE_DIRECTORY, 'llama.cpp', 'llama-server')
-export const LLAMA_MODELS = join(CACHE_DIRECTORY, 'gguf-models')
+export const LLAMA_MODELS = join(SPEECH_MODELS, 'gguf')
 export const RUNNERS_DIRECTORY = join(CACHE_DIRECTORY, 'python')
 
 export type VoiceEngine =
