@@ -11,6 +11,7 @@
  * content and the settings, so a later run reuses it and loads only models with something new to do;
  * "Run without cache" (force) redoes everything.
  */
+import { withGpu } from '@bench/gpu-lock'
 import { MODEL_DIRECTORY, type EngineStats, RAW_DIRECTORY, RESULTS_PATH, type SpeakerResults, type UtteranceResult, assignStreamedWords, engineStats, launch, modelRow, runDetails, runningEngines, slice, streamRecording, transcribe } from '@bench/run'
 import { CRISPASR_MODELS, LLAMA_MODELS, RUNNERS_DIRECTORY, VOICE_MODELS, type VoiceModel, SPEECH_MODELS } from '@bench/models'
 import { type Recording, ROOT, loadRecordings } from '@bench/recordings'
@@ -121,8 +122,8 @@ export async function voicebench() {
     const modelTask = task<ModelInput, ModelOutput>({
         name: 'model',
         concurrency: { key: 'gpu', max: 1 },
-        timeout: '4h',
-        fn: async (input, context) => {
+        timeout: '8h',
+        fn: (input, context) => withGpu(async () => {
             const model = modelById(input.model)
             const missing = input.force || input.speakers.some(speaker => !kept.get(transcriptKey(model, recordingFor(speaker))))
             let stats = input.force ? undefined : kept.get<EngineStats>(engineKey(model))
@@ -156,7 +157,7 @@ export async function voicebench() {
             const { row, detail } = modelRow(model, perSpeaker, stats!)
             writeFileSync(join(RAW_DIRECTORY, `${model.id}.json`), JSON.stringify({ model: model.id, speakers: perSpeaker }, null, 2))
             return { row: row as JsonObject, detail: detail as JsonObject, summary: `Score ${row.score ?? '–'} · ${(Number(row.wordErrorRate) * 100).toFixed(1)}% word errors` }
-        },
+        }, owner => context.log(`Waiting for the GPU (held by ${owner.split(' ')[0]})`)),
     })
 
     const publishTask = task<PublishInput, PublishOutput>({
