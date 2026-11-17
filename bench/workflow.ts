@@ -128,8 +128,12 @@ export async function voicebench() {
             let stats = input.force ? undefined : kept.get<EngineStats>(engineKey(model))
             let server: Awaited<ReturnType<typeof launch>>['server'] | null = null
             if (missing || !stats) {
-                const others = runningEngines()
-                if (others.length) throw new Error(`Another engine is still running, refusing to measure: ${others.join('; ')}`)
+                // The GPU is measured alone: another engine (Toolbench, Outpost's local models) is waited out, an hour at most.
+                for (let waited = 0; runningEngines().length; waited += 2000) {
+                    if (waited >= 3_600_000) throw new Error(`Another engine is still running after an hour, refusing to measure: ${runningEngines().join('; ')}`)
+                    if (waited % 60_000 === 0) await context.log('Waiting for another engine to stop before measuring')
+                    await new Promise(resolve => setTimeout(resolve, 2000))
+                }
                 await context.log('Loading the model')
                 mkdirSync(RAW_DIRECTORY, { recursive: true })
                 const launched = await launch(model, join(RAW_DIRECTORY, `${model.id}.server.log`))
