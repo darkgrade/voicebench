@@ -165,7 +165,8 @@ export async function voicebench() {
             // Rows of models not in this run stay as they were.
             const previous = existsSync(RESULTS_PATH) ? ((JSON.parse(readFileSync(RESULTS_PATH, 'utf8')) as { models?: Row[] }).models ?? []) : []
             const rows = new Map(previous.map(row => [String(row.id), row]))
-            for (const row of input.rows) rows.set(String(row.id), row)
+            // A model that failed this time keeps its last good row: an error never replaces a published score.
+            for (const row of input.rows) if (!row.error || !rows.get(String(row.id))?.score) rows.set(String(row.id), row)
             const ordered = [...rows.values()].sort((first, second) => Number(second.score ?? -1) - Number(first.score ?? -1))
             const files: Record<string, string> = { [relative(ROOT, RESULTS_PATH)]: `${JSON.stringify({ ...input.details, models: ordered }, null, 2)}\n` }
             for (const detail of input.modelDetails) files[relative(ROOT, join(MODEL_DIRECTORY, `${detail.id}.json`))] = `${JSON.stringify(detail)}\n`
@@ -206,6 +207,8 @@ export async function voicebench() {
             }
             const published = await publishTask.run({ details: prepared.details, rows, modelDetails: details }, { label: 'Publish', key: 'publish' })
             const scored = rows.filter(row => !row.error).length
+            const failed = rows.filter(row => row.error)
+            if (failed.length) throw new Error(`${failed.length} of ${rows.length} models failed (${published.summary}): ${failed.map(row => `${row.name}: ${row.error}`).join('; ').slice(0, 2000)}`)
             return { ranked: scored, summary: `${scored} of ${rows.length} models scored · ${published.summary}` }
         },
     })
