@@ -16,7 +16,7 @@ changes, change the others.
 | Path | What it holds |
 | --- | --- |
 | `bench/` | The harness, in TypeScript, run with bun. `workflow.ts` is the benchmark as a workflow (Outpost's workflows: one task per model, smaller tasks under it, then `publish`), `run.ts` measures, `setup.ts` installs engines and models, `models.ts` lists every model under test. |
-| `.claude-plugin/`, `outpost/` | The Outpost app: installed from this repository, it shows the workflow's runs live (Run, Run without cache, Cancel, Retry), and keeps a worker on the Mac running this repository's latest commit. It doesn't show the results: the site does. Never part of the public site. |
+| `.claude-plugin/` | The Outpost plugin: only the workflow. Outpost installs it from this repository and runs its worker (`bench/worker.ts`) on the Mac, on this repository's latest commit, against Outpost's own workflows engine; the runs and their graph are Outpost's Runs pages, the results the site's. No page, no server. Never part of the public site. |
 | `bench/runners/` | Small non-TypeScript shims, only for models that ship nothing else (see Approved exceptions). |
 | `script/` | The fixed input every participant or run uses (here, the reading script). |
 | `recordings/` | Inputs gathered from people: `speaker-NN.<ext>` plus `speakers.json` (anonymous metadata). Audio is git-ignored until its speaker agrees to publish it. |
@@ -27,8 +27,8 @@ changes, change the others.
 **Commands** (the same names in every bench)
 
 - `bun run setup`: download engines and models into the cache (`~/.cache/darkgrade-bench/<bench>/`, or `BENCH_CACHE`). Skips anything already there.
-- `bun run worker`: serve the workflow's tasks on this Mac. In Outpost, `ops/worker.sh <bench>` keeps it running from Outpost's checkout; on its own it starts a development engine (nothing is published).
-- `bun run bench`: start a run on the worker (every model; `-- --models a,b` for some, whose rows are replaced and the rest kept; `--force` redoes what earlier runs kept). In Outpost, start runs from the app instead: a run there ends by committing the results files to `main` through Outpost (`publish`), and Vercel deploys them.
+- `bun run worker`: serve the workflow's tasks on this Mac. Outpost runs it itself, from its own copy of this repository, and starts it again on new commits; on its own it starts a development engine (nothing is published).
+- `bun run bench`: start a run on the worker (every model; `-- --models a,b` for some, whose rows are replaced and the rest kept; `--force` redoes what earlier runs kept). In Outpost, start runs from the app (Run workflow) instead: a run there ends by committing the results files to `main` through Outpost (`publish`), and Vercel deploys them.
 - Results a task produced are kept (`results/raw/cache/`, git-ignored) under a key of everything that affects them (model files, input hashes, settings, harness code), so a run redoes only what changed.
 - `bun run dev` / `bun run build`: the results site. Both run `bun run data` first (see Site).
 
