@@ -3,7 +3,7 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-const LOCK = process.env.GPU_LOCK ?? '/Users/Shared/darkgrade-bench/shared/gpu.lock'
+const LOCK = process.env.GPU_LOCK ?? '/tmp/darkgrade-bench-gpu.lock'
 const alive = (pid: number) => {
     try {
         process.kill(pid, 0)
