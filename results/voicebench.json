@@ -1,6 +1,6 @@
 {
   "benchmark": "voicebench",
-  "date": "2026-11-17T21:33:57.860Z",
+  "date": "2026-11-17T23:29:08.076Z",
   "engines": {
     "crispasr": "unknown",
     "harness": "bun 1.4.4",
@@ -134,95 +134,24 @@
       "bySpeaker": {
         "speaker-01": 0.0058,
         "speaker-02": 0,
-        "speaker-03": 0.0058,
-        "speaker-04": 0.0058,
-        "speaker-05": 0.0116,
-        "speaker-06": 0.0058,
-        "speaker-07": 0.0291,
-        "speaker-08": 0.0233
-      },
-      "characterErrorRate": 0.0059,
-      "coverage": 100,
-      "engine": "python",
-      "errors": {
-        "deletions": 4,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 8
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 1254196636,
-          "name": "model.safetensors",
-          "sha256": "6f84b33e63ebd1851e910e8b2fe299d29f5e0efc6f57e84d92d2f79af464e0e5"
-        }
-      ],
-      "id": "bark-3.0-pro",
-      "latencyMaxMs": 723,
-      "latencyMedianMs": 50,
-      "latencyP90Ms": 140,
-      "licence": "CC-BY-NC-4.0",
-      "loadSeconds": 41.1,
-      "maker": "Conway Research",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "Underdog Bark 3.0 Pro",
-      "peakMemoryGigabytes": 2.6,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "1.1% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 25,
-          "score": 100,
-          "weight": 25,
-          "why": "0.05 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 15,
-          "score": 100,
-          "weight": 15,
-          "why": "0.14 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 100,
-      "sizeGigabytes": 1.25,
-      "source": "https://huggingface.co/ConwayResearch/Underdog-Bark-3.0-Pro",
-      "strengths": [
-        "1.1% word errors",
-        "0.05 s typical wait"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0109
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0058,
-        "speaker-02": 0,
         "speaker-03": 0,
         "speaker-04": 0.0116,
         "speaker-05": 0.0116,
         "speaker-06": 0,
         "speaker-07": 0.0233,
-        "speaker-08": 0.0233
+        "speaker-08": 0.0233,
+        "speaker-09": 0.0116,
+        "speaker-10": 0.0407,
+        "speaker-11": 0.0349
       },
-      "characterErrorRate": 0.0054,
+      "characterErrorRate": 0.0092,
       "coverage": 100,
       "engine": "python",
       "errors": {
-        "deletions": 4,
-        "insertions": 2,
-        "referenceWords": 1376,
-        "substitutions": 7
+        "deletions": 5,
+        "insertions": 12,
+        "referenceWords": 1892,
+        "substitutions": 11
       },
       "failedUtterances": 0,
       "files": [
@@ -233,123 +162,49 @@
         }
       ],
       "id": "bark-3.0-plus",
-      "latencyMaxMs": 468,
-      "latencyMedianMs": 38,
-      "latencyP90Ms": 72,
+      "latencyMaxMs": 871,
+      "latencyMedianMs": 56,
+      "latencyP90Ms": 115,
       "licence": "CC-BY-NC-4.0",
-      "loadSeconds": 45.9,
+      "loadSeconds": 2.6,
       "maker": "Conway Research",
       "missing": [],
       "mode": "whole utterance",
       "name": "Underdog Bark 3.0 Plus",
-      "peakMemoryGigabytes": 1.62,
+      "peakMemoryGigabytes": 1.7,
       "reasons": [
         {
           "area": "Accuracy",
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.9% word errors"
+          "why": "1.5% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 25,
-          "score": 100,
+          "points": 24.2,
+          "score": 97,
           "weight": 25,
-          "why": "0.04 s typical wait"
+          "why": "0.06 s typical wait"
         },
         {
           "area": "Slow wait",
           "points": 15,
           "score": 100,
           "weight": 15,
-          "why": "0.07 s for the slowest 1 in 10"
+          "why": "0.12 s for the slowest 1 in 10"
         }
       ],
-      "score": 100,
+      "score": 99,
       "sizeGigabytes": 0.18,
       "source": "https://huggingface.co/ConwayResearch/Underdog-Bark-3.0-Plus",
       "strengths": [
-        "0.9% word errors",
-        "0.04 s typical wait"
+        "1.5% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0094
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0058,
-        "speaker-02": 0,
-        "speaker-03": 0.0058,
-        "speaker-04": 0.0116,
-        "speaker-05": 0.0058,
-        "speaker-06": 0.0058,
-        "speaker-07": 0.0407,
-        "speaker-08": 0.0233
-      },
-      "characterErrorRate": 0.0064,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 6,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 8
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 674342560,
-          "name": "phonon2-q8_0.gguf",
-          "sha256": "a8c4a874195b83604ceb5d87c0e9b5ddf641ef1d5ec2d8e1ca2a040d25b2563a"
-        }
-      ],
-      "id": "phonon-2",
-      "latencyMaxMs": 95,
-      "latencyMedianMs": 64,
-      "latencyP90Ms": 80,
-      "licence": "CC-BY-4.0 (GGUF) / Apache-2.0 (package)",
-      "loadSeconds": 0.5,
-      "maker": "Fermion Research",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "Phonon-2",
-      "peakMemoryGigabytes": 0.96,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "1.2% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 23.2,
-          "score": 93,
-          "weight": 25,
-          "why": "0.06 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 15,
-          "score": 100,
-          "weight": 15,
-          "why": "0.08 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 98,
-      "sizeGigabytes": 0.67,
-      "source": "https://huggingface.co/cstr/phonon2-GGUF/resolve/main/phonon2-q8_0.gguf",
-      "strengths": [
-        "1.2% word errors"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0124
+      "wordErrorRate": 0.0148
     },
     {
       "bySpeaker": {
@@ -359,163 +214,20 @@
         "speaker-04": 0.0058,
         "speaker-05": 0.0058,
         "speaker-06": 0,
-        "speaker-07": 0.0233,
-        "speaker-08": 0.0116
+        "speaker-07": 0.0523,
+        "speaker-08": 0.0174,
+        "speaker-09": 0.0174,
+        "speaker-10": 0.0174,
+        "speaker-11": 0.0349
       },
-      "characterErrorRate": 0.0041,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 3,
-        "insertions": 2,
-        "referenceWords": 1376,
-        "substitutions": 5
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 402226496,
-          "name": "parakeet-ultra-q4_k.gguf",
-          "sha256": "09bb4a91da4c14f158ad01829b9bb3d81eedc85156d884e9a9c483dfe09238c6"
-        }
-      ],
-      "id": "parakeet-ultra",
-      "latencyMaxMs": 113,
-      "latencyMedianMs": 63,
-      "latencyP90Ms": 81,
-      "licence": "CC-BY-4.0",
-      "loadSeconds": 0.3,
-      "maker": "moondream",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "parakeet-ultra",
-      "peakMemoryGigabytes": 0.66,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "0.7% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 23.3,
-          "score": 93,
-          "weight": 25,
-          "why": "0.06 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 15,
-          "score": 100,
-          "weight": 15,
-          "why": "0.08 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 98,
-      "sizeGigabytes": 0.4,
-      "source": "https://huggingface.co/cstr/parakeet-ultra-GGUF/resolve/main/parakeet-ultra-q4_k.gguf",
-      "strengths": [
-        "0.7% word errors"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0073
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0058,
-        "speaker-02": 0.0174,
-        "speaker-03": 0.0174,
-        "speaker-04": 0.0174,
-        "speaker-05": 0.0116,
-        "speaker-06": 0.0116,
-        "speaker-07": 0.0407,
-        "speaker-08": 0.0291
-      },
-      "characterErrorRate": 0.0093,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 4,
-        "insertions": 4,
-        "referenceWords": 1376,
-        "substitutions": 18
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 402226496,
-          "name": "parakeet-redux-q4_k.gguf",
-          "sha256": "c07c7a0c76aa573334df88afc3a0c3bed45f90a35f09c22979e811078be30e6d"
-        }
-      ],
-      "id": "parakeet-redux",
-      "latencyMaxMs": 129,
-      "latencyMedianMs": 64,
-      "latencyP90Ms": 79,
-      "licence": "CC-BY-4.0",
-      "loadSeconds": 0.4,
-      "maker": "moondream",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "parakeet-redux (ternary encoder)",
-      "peakMemoryGigabytes": 0.66,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "1.9% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 23.2,
-          "score": 93,
-          "weight": 25,
-          "why": "0.06 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 15,
-          "score": 100,
-          "weight": 15,
-          "why": "0.08 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 98,
-      "sizeGigabytes": 0.4,
-      "source": "https://huggingface.co/cstr/parakeet-redux-GGUF/resolve/main/parakeet-redux-q4_k.gguf",
-      "strengths": [
-        "1.9% word errors"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0189
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0116,
-        "speaker-02": 0,
-        "speaker-03": 0.0058,
-        "speaker-04": 0.0058,
-        "speaker-05": 0.0058,
-        "speaker-06": 0,
-        "speaker-07": 0.0349,
-        "speaker-08": 0.0174
-      },
-      "characterErrorRate": 0.006,
+      "characterErrorRate": 0.0097,
       "coverage": 100,
       "engine": "llama-server",
       "errors": {
-        "deletions": 6,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 5
+        "deletions": 7,
+        "insertions": 10,
+        "referenceWords": 1892,
+        "substitutions": 11
       },
       "failedUtterances": 0,
       "files": [
@@ -531,11 +243,11 @@
         }
       ],
       "id": "lfm2.5-audio-1.5b",
-      "latencyMaxMs": 258,
-      "latencyMedianMs": 68,
-      "latencyP90Ms": 135,
+      "latencyMaxMs": 240,
+      "latencyMedianMs": 66,
+      "latencyP90Ms": 130,
       "licence": "LFM Open",
-      "loadSeconds": 0.8,
+      "loadSeconds": 1,
       "maker": "Liquid AI",
       "missing": [],
       "mode": "whole utterance",
@@ -547,12 +259,12 @@
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "1.0% word errors"
+          "why": "1.5% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 22.7,
-          "score": 91,
+          "points": 23,
+          "score": 92,
           "weight": 25,
           "why": "0.07 s typical wait"
         },
@@ -561,19 +273,19 @@
           "points": 15,
           "score": 100,
           "weight": 15,
-          "why": "0.14 s for the slowest 1 in 10"
+          "why": "0.13 s for the slowest 1 in 10"
         }
       ],
       "score": 98,
       "sizeGigabytes": 1.54,
       "source": "https://huggingface.co/LiquidAI/LFM2.5-Audio-1.5B-GGUF",
       "strengths": [
-        "1.0% word errors"
+        "1.5% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0102
+      "wordErrorRate": 0.0148
     },
     {
       "bySpeaker": {
@@ -584,15 +296,18 @@
         "speaker-05": 0.0058,
         "speaker-06": 0,
         "speaker-07": 0.0407,
-        "speaker-08": 0.0116
+        "speaker-08": 0.0116,
+        "speaker-09": 0,
+        "speaker-10": 0.0174,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0053,
+      "characterErrorRate": 0.0071,
       "coverage": 100,
       "engine": "llama-server",
       "errors": {
         "deletions": 5,
-        "insertions": 1,
-        "referenceWords": 1376,
+        "insertions": 9,
+        "referenceWords": 1892,
         "substitutions": 6
       },
       "failedUtterances": 0,
@@ -609,11 +324,11 @@
         }
       ],
       "id": "qwen3-asr-0.6b",
-      "latencyMaxMs": 244,
-      "latencyMedianMs": 83,
-      "latencyP90Ms": 163,
+      "latencyMaxMs": 230,
+      "latencyMedianMs": 72,
+      "latencyP90Ms": 147,
       "licence": "Apache-2.0",
-      "loadSeconds": 1.1,
+      "loadSeconds": 1.2,
       "maker": "Qwen",
       "missing": [],
       "mode": "whole utterance",
@@ -625,106 +340,33 @@
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.9% word errors"
+          "why": "1.1% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 21.3,
-          "score": 85,
+          "points": 22.3,
+          "score": 89,
           "weight": 25,
-          "why": "0.08 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 14.6,
-          "score": 97,
-          "weight": 15,
-          "why": "0.16 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 96,
-      "sizeGigabytes": 1.02,
-      "source": "https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF",
-      "strengths": [
-        "0.9% word errors"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0087
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.0058,
-        "speaker-02": 0.0233,
-        "speaker-03": 0.0058,
-        "speaker-04": 0.0116,
-        "speaker-05": 0.0116,
-        "speaker-06": 0.0116,
-        "speaker-07": 0.0349,
-        "speaker-08": 0.0116
-      },
-      "characterErrorRate": 0.0066,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 4,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 13
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 1289178240,
-          "name": "cohere-transcribe-q4_k.gguf",
-          "sha256": "116f4c4f7ff1b03997100d3a097e13fecd84350555b9979867b241cd6803e4f5"
-        }
-      ],
-      "id": "cohere-transcribe",
-      "latencyMaxMs": 142,
-      "latencyMedianMs": 86,
-      "latencyP90Ms": 117,
-      "licence": "Apache-2.0",
-      "loadSeconds": 0.5,
-      "maker": "Cohere",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "Cohere Transcribe 03-2026",
-      "peakMemoryGigabytes": 1.38,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 60,
-          "score": 100,
-          "weight": 60,
-          "why": "1.5% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 21,
-          "score": 84,
-          "weight": 25,
-          "why": "0.09 s typical wait"
+          "why": "0.07 s typical wait"
         },
         {
           "area": "Slow wait",
           "points": 15,
           "score": 100,
           "weight": 15,
-          "why": "0.12 s for the slowest 1 in 10"
+          "why": "0.15 s for the slowest 1 in 10"
         }
       ],
-      "score": 96,
-      "sizeGigabytes": 1.29,
-      "source": "https://huggingface.co/cstr/cohere-transcribe-03-2026-GGUF/resolve/main/cohere-transcribe-q4_k.gguf",
+      "score": 97,
+      "sizeGigabytes": 1.02,
+      "source": "https://huggingface.co/ggml-org/Qwen3-ASR-0.6B-GGUF",
       "strengths": [
-        "1.5% word errors"
+        "1.1% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0145
+      "wordErrorRate": 0.0106
     },
     {
       "bySpeaker": {
@@ -758,16 +400,16 @@
         }
       ],
       "id": "parakeet-tdt-0.6b-v3",
-      "latencyMaxMs": 368,
-      "latencyMedianMs": 90,
-      "latencyP90Ms": 147,
+      "latencyMaxMs": 183,
+      "latencyMedianMs": 76,
+      "latencyP90Ms": 125,
       "licence": "CC-BY-4.0",
-      "loadSeconds": 4.4,
+      "loadSeconds": 0.4,
       "maker": "NVIDIA",
       "missing": [],
       "mode": "whole utterance",
       "name": "Parakeet TDT 0.6B v3",
-      "peakMemoryGigabytes": 0.7,
+      "peakMemoryGigabytes": 0.69,
       "reasons": [
         {
           "area": "Accuracy",
@@ -778,20 +420,20 @@
         },
         {
           "area": "Typical wait",
-          "points": 20.7,
-          "score": 83,
+          "points": 21.9,
+          "score": 88,
           "weight": 25,
-          "why": "0.09 s typical wait"
+          "why": "0.08 s typical wait"
         },
         {
           "area": "Slow wait",
           "points": 15,
           "score": 100,
           "weight": 15,
-          "why": "0.15 s for the slowest 1 in 10"
+          "why": "0.13 s for the slowest 1 in 10"
         }
       ],
-      "score": 96,
+      "score": 97,
       "sizeGigabytes": 0.42,
       "source": "https://huggingface.co/cstr/parakeet-tdt-0.6b-v3-GGUF/resolve/main/parakeet-tdt-0.6b-v3-q4_k.gguf",
       "strengths": [
@@ -805,22 +447,253 @@
     {
       "bySpeaker": {
         "speaker-01": 0.0058,
+        "speaker-02": 0,
+        "speaker-03": 0.0058,
+        "speaker-04": 0.0116,
+        "speaker-05": 0.0058,
+        "speaker-06": 0.0058,
+        "speaker-07": 0.0407,
+        "speaker-08": 0.0233,
+        "speaker-09": 0.0116,
+        "speaker-10": 0.0349,
+        "speaker-11": 0.0291
+      },
+      "characterErrorRate": 0.0096,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 8,
+        "insertions": 12,
+        "referenceWords": 1892,
+        "substitutions": 10
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 674342560,
+          "name": "phonon2-q8_0.gguf",
+          "sha256": "a8c4a874195b83604ceb5d87c0e9b5ddf641ef1d5ec2d8e1ca2a040d25b2563a"
+        }
+      ],
+      "id": "phonon-2",
+      "latencyMaxMs": 200,
+      "latencyMedianMs": 85,
+      "latencyP90Ms": 133,
+      "licence": "CC-BY-4.0 (GGUF) / Apache-2.0 (package)",
+      "loadSeconds": 0.6,
+      "maker": "Fermion Research",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "Phonon-2",
+      "peakMemoryGigabytes": 0.96,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 60,
+          "score": 100,
+          "weight": 60,
+          "why": "1.6% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 21.1,
+          "score": 84,
+          "weight": 25,
+          "why": "0.09 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 15,
+          "score": 100,
+          "weight": 15,
+          "why": "0.13 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 96,
+      "sizeGigabytes": 0.67,
+      "source": "https://huggingface.co/cstr/phonon2-GGUF/resolve/main/phonon2-q8_0.gguf",
+      "strengths": [
+        "1.6% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 1,
+      "wordErrorRate": 0.0159
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0.0058,
+        "speaker-02": 0,
+        "speaker-03": 0.0058,
+        "speaker-04": 0.0058,
+        "speaker-05": 0.0058,
+        "speaker-06": 0,
+        "speaker-07": 0.0233,
+        "speaker-08": 0.0116,
+        "speaker-09": 0,
+        "speaker-10": 0.0407,
+        "speaker-11": 0.0349
+      },
+      "characterErrorRate": 0.0077,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 4,
+        "insertions": 12,
+        "referenceWords": 1892,
+        "substitutions": 7
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 402226496,
+          "name": "parakeet-ultra-q4_k.gguf",
+          "sha256": "09bb4a91da4c14f158ad01829b9bb3d81eedc85156d884e9a9c483dfe09238c6"
+        }
+      ],
+      "id": "parakeet-ultra",
+      "latencyMaxMs": 227,
+      "latencyMedianMs": 92,
+      "latencyP90Ms": 137,
+      "licence": "CC-BY-4.0",
+      "loadSeconds": 0.4,
+      "maker": "moondream",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "parakeet-ultra",
+      "peakMemoryGigabytes": 0.66,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 60,
+          "score": 100,
+          "weight": 60,
+          "why": "1.2% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 20.5,
+          "score": 82,
+          "weight": 25,
+          "why": "0.09 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 15,
+          "score": 100,
+          "weight": 15,
+          "why": "0.14 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 96,
+      "sizeGigabytes": 0.4,
+      "source": "https://huggingface.co/cstr/parakeet-ultra-GGUF/resolve/main/parakeet-ultra-q4_k.gguf",
+      "strengths": [
+        "1.2% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 1,
+      "wordErrorRate": 0.0122
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0.0058,
+        "speaker-02": 0,
+        "speaker-03": 0.0058,
+        "speaker-04": 0.0058,
+        "speaker-05": 0.0116,
+        "speaker-06": 0.0058,
+        "speaker-07": 0.0291,
+        "speaker-08": 0.0233,
+        "speaker-09": 0.0058,
+        "speaker-10": 0.0291,
+        "speaker-11": 0.0349
+      },
+      "characterErrorRate": 0.0086,
+      "coverage": 100,
+      "engine": "python",
+      "errors": {
+        "deletions": 4,
+        "insertions": 13,
+        "referenceWords": 1892,
+        "substitutions": 10
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 1254196636,
+          "name": "model.safetensors",
+          "sha256": "6f84b33e63ebd1851e910e8b2fe299d29f5e0efc6f57e84d92d2f79af464e0e5"
+        }
+      ],
+      "id": "bark-3.0-pro",
+      "latencyMaxMs": 1673,
+      "latencyMedianMs": 79,
+      "latencyP90Ms": 202,
+      "licence": "CC-BY-NC-4.0",
+      "loadSeconds": 5.4,
+      "maker": "Conway Research",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "Underdog Bark 3.0 Pro",
+      "peakMemoryGigabytes": 2.68,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 60,
+          "score": 100,
+          "weight": 60,
+          "why": "1.4% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 21.6,
+          "score": 87,
+          "weight": 25,
+          "why": "0.08 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 13.5,
+          "score": 90,
+          "weight": 15,
+          "why": "0.20 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 95,
+      "sizeGigabytes": 1.25,
+      "source": "https://huggingface.co/ConwayResearch/Underdog-Bark-3.0-Pro",
+      "strengths": [
+        "1.4% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 0.986,
+      "wordErrorRate": 0.0143
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0,
         "speaker-02": 0.0116,
         "speaker-03": 0,
         "speaker-04": 0.0058,
         "speaker-05": 0.0058,
-        "speaker-06": 0.0058,
+        "speaker-06": 0,
         "speaker-07": 0.0291,
-        "speaker-08": 0.0058
+        "speaker-08": 0,
+        "speaker-09": 0.0116,
+        "speaker-10": 0.0058,
+        "speaker-11": 0.0058
       },
-      "characterErrorRate": 0.0043,
+      "characterErrorRate": 0.0039,
       "coverage": 100,
       "engine": "llama-server",
       "errors": {
         "deletions": 4,
         "insertions": 2,
-        "referenceWords": 1376,
-        "substitutions": 6
+        "referenceWords": 1892,
+        "substitutions": 7
       },
       "failedUtterances": 0,
       "files": [
@@ -836,11 +709,11 @@
         }
       ],
       "id": "granite-speech-5.0-2b",
-      "latencyMaxMs": 340,
+      "latencyMaxMs": 332,
       "latencyMedianMs": 98,
-      "latencyP90Ms": 229,
+      "latencyP90Ms": 228,
       "licence": "Apache-2.0",
-      "loadSeconds": 1.5,
+      "loadSeconds": 1.6,
       "maker": "IBM",
       "missing": [],
       "mode": "whole utterance",
@@ -852,7 +725,7 @@
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.9% word errors"
+          "why": "0.7% word errors"
         },
         {
           "area": "Typical wait",
@@ -873,12 +746,12 @@
       "sizeGigabytes": 3.12,
       "source": "https://huggingface.co/ibm-granite/granite-speech-5.0-2b-GGUF",
       "strengths": [
-        "0.9% word errors"
+        "0.7% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0087
+      "wordErrorRate": 0.0069
     },
     {
       "bySpeaker": {
@@ -889,15 +762,18 @@
         "speaker-05": 0.0058,
         "speaker-06": 0,
         "speaker-07": 0.0291,
-        "speaker-08": 0.0116
+        "speaker-08": 0.0116,
+        "speaker-09": 0,
+        "speaker-10": 0.0116,
+        "speaker-11": 0.0349
       },
-      "characterErrorRate": 0.004,
+      "characterErrorRate": 0.0058,
       "coverage": 100,
       "engine": "llama-server",
       "errors": {
-        "deletions": 4,
-        "insertions": 2,
-        "referenceWords": 1376,
+        "deletions": 5,
+        "insertions": 9,
+        "referenceWords": 1892,
         "substitutions": 4
       },
       "failedUtterances": 0,
@@ -914,23 +790,23 @@
         }
       ],
       "id": "qwen3-asr-1.7b",
-      "latencyMaxMs": 338,
-      "latencyMedianMs": 109,
-      "latencyP90Ms": 219,
+      "latencyMaxMs": 278,
+      "latencyMedianMs": 108,
+      "latencyP90Ms": 218,
       "licence": "Apache-2.0",
-      "loadSeconds": 6.5,
+      "loadSeconds": 4.9,
       "maker": "Qwen",
       "missing": [],
       "mode": "whole utterance",
       "name": "Qwen3-ASR 1.7B",
-      "peakMemoryGigabytes": 7.74,
+      "peakMemoryGigabytes": 7.71,
       "reasons": [
         {
           "area": "Accuracy",
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.7% word errors"
+          "why": "1.0% word errors"
         },
         {
           "area": "Typical wait",
@@ -942,7 +818,7 @@
         {
           "area": "Slow wait",
           "points": 13.1,
-          "score": 87,
+          "score": 88,
           "weight": 15,
           "why": "0.22 s for the slowest 1 in 10"
         }
@@ -951,12 +827,88 @@
       "sizeGigabytes": 2.52,
       "source": "https://huggingface.co/ggml-org/Qwen3-ASR-1.7B-GGUF",
       "strengths": [
-        "0.7% word errors"
+        "1.0% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0073
+      "wordErrorRate": 0.0095
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0.0058,
+        "speaker-02": 0.0174,
+        "speaker-03": 0.0174,
+        "speaker-04": 0.0174,
+        "speaker-05": 0.0116,
+        "speaker-06": 0.0116,
+        "speaker-07": 0.0407,
+        "speaker-08": 0.0291,
+        "speaker-09": 0.0174,
+        "speaker-10": 0.0349,
+        "speaker-11": 0.0407
+      },
+      "characterErrorRate": 0.0123,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 5,
+        "insertions": 14,
+        "referenceWords": 1892,
+        "substitutions": 23
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 402226496,
+          "name": "parakeet-redux-q4_k.gguf",
+          "sha256": "c07c7a0c76aa573334df88afc3a0c3bed45f90a35f09c22979e811078be30e6d"
+        }
+      ],
+      "id": "parakeet-redux",
+      "latencyMaxMs": 229,
+      "latencyMedianMs": 102,
+      "latencyP90Ms": 158,
+      "licence": "CC-BY-4.0",
+      "loadSeconds": 0.3,
+      "maker": "moondream",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "parakeet-redux (ternary encoder)",
+      "peakMemoryGigabytes": 0.66,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 56.9,
+          "score": 95,
+          "weight": 60,
+          "why": "2.2% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 19.8,
+          "score": 79,
+          "weight": 25,
+          "why": "0.10 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 14.7,
+          "score": 98,
+          "weight": 15,
+          "why": "0.16 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 91,
+      "sizeGigabytes": 0.4,
+      "source": "https://huggingface.co/cstr/parakeet-redux-GGUF/resolve/main/parakeet-redux-q4_k.gguf",
+      "strengths": [
+        "2.2% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 1,
+      "wordErrorRate": 0.0222
     },
     {
       "bySpeaker": {
@@ -967,15 +919,18 @@
         "speaker-05": 0,
         "speaker-06": 0,
         "speaker-07": 0.0291,
-        "speaker-08": 0.0174
+        "speaker-08": 0.0174,
+        "speaker-09": 0,
+        "speaker-10": 0.0291,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0041,
+      "characterErrorRate": 0.0069,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
         "deletions": 4,
-        "insertions": 3,
-        "referenceWords": 1376,
+        "insertions": 13,
+        "referenceWords": 1892,
         "substitutions": 3
       },
       "failedUtterances": 0,
@@ -987,23 +942,23 @@
         }
       ],
       "id": "higgs-audio-v3-stt",
-      "latencyMaxMs": 340,
+      "latencyMaxMs": 343,
       "latencyMedianMs": 114,
-      "latencyP90Ms": 272,
+      "latencyP90Ms": 274,
       "licence": "Apache-2.0",
-      "loadSeconds": 0.8,
+      "loadSeconds": 1.3,
       "maker": "Boson AI",
       "missing": [],
       "mode": "whole utterance",
       "name": "Higgs Audio v3 STT",
-      "peakMemoryGigabytes": 2.69,
+      "peakMemoryGigabytes": 2.6,
       "reasons": [
         {
           "area": "Accuracy",
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.7% word errors"
+          "why": "1.1% word errors"
         },
         {
           "area": "Typical wait",
@@ -1024,85 +979,88 @@
       "sizeGigabytes": 2.43,
       "source": "https://huggingface.co/cstr/higgs-audio-v3-stt-GGUF/resolve/main/higgs-stt-q4_k.gguf",
       "strengths": [
-        "0.7% word errors"
+        "1.1% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0073
+      "wordErrorRate": 0.0106
     },
     {
       "bySpeaker": {
-        "speaker-01": 0,
-        "speaker-02": 0.0058,
+        "speaker-01": 0.0058,
+        "speaker-02": 0.0233,
         "speaker-03": 0.0058,
         "speaker-04": 0.0116,
-        "speaker-05": 0.0058,
-        "speaker-06": 0,
-        "speaker-07": 0.0291,
-        "speaker-08": 0.0233
+        "speaker-05": 0.0116,
+        "speaker-06": 0.0116,
+        "speaker-07": 0.0349,
+        "speaker-08": 0.0116,
+        "speaker-09": 0.0058,
+        "speaker-10": 0.0058,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0064,
+      "characterErrorRate": 0.0074,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
         "deletions": 4,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 7
+        "insertions": 8,
+        "referenceWords": 1892,
+        "substitutions": 15
       },
       "failedUtterances": 0,
       "files": [
         {
-          "bytes": 3671972192,
-          "name": "canary-qwen-2.5b-q4_k.gguf",
-          "sha256": "8f9e3a390b8a4b57dfc9df26a07ad5baaa1dba3ca928435120f2befac5574656"
+          "bytes": 1289178240,
+          "name": "cohere-transcribe-q4_k.gguf",
+          "sha256": "116f4c4f7ff1b03997100d3a097e13fecd84350555b9979867b241cd6803e4f5"
         }
       ],
-      "id": "canary-qwen-2.5b",
-      "latencyMaxMs": 387,
-      "latencyMedianMs": 156,
-      "latencyP90Ms": 295,
-      "licence": "CC-BY-4.0",
-      "loadSeconds": 1.3,
-      "maker": "NVIDIA",
+      "id": "cohere-transcribe",
+      "latencyMaxMs": 345,
+      "latencyMedianMs": 136,
+      "latencyP90Ms": 241,
+      "licence": "Apache-2.0",
+      "loadSeconds": 0.8,
+      "maker": "Cohere",
       "missing": [],
       "mode": "whole utterance",
-      "name": "Canary-Qwen 2.5B",
-      "peakMemoryGigabytes": 3.97,
+      "name": "Cohere Transcribe 03-2026",
+      "peakMemoryGigabytes": 1.38,
       "reasons": [
         {
           "area": "Accuracy",
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "1.0% word errors"
+          "why": "1.4% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 16.6,
-          "score": 67,
+          "points": 17.6,
+          "score": 71,
           "weight": 25,
-          "why": "0.16 s typical wait"
+          "why": "0.14 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 11.6,
-          "score": 77,
+          "points": 12.6,
+          "score": 84,
           "weight": 15,
-          "why": "0.29 s for the slowest 1 in 10"
+          "why": "0.24 s for the slowest 1 in 10"
         }
       ],
-      "score": 88,
-      "sizeGigabytes": 3.67,
-      "source": "https://huggingface.co/cstr/canary-qwen-2.5b-GGUF/resolve/main/canary-qwen-2.5b-q4_k.gguf",
+      "score": 90,
+      "sizeGigabytes": 1.29,
+      "source": "https://huggingface.co/cstr/cohere-transcribe-03-2026-GGUF/resolve/main/cohere-transcribe-q4_k.gguf",
       "strengths": [
-        "1.0% word errors"
+        "1.4% word errors"
       ],
-      "utterancesWithoutText": 2,
+      "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0102
+      "wordErrorRate": 0.0143
     },
     {
       "bySpeaker": {
@@ -1113,16 +1071,19 @@
         "speaker-05": 0.0058,
         "speaker-06": 0.0058,
         "speaker-07": 0.0349,
-        "speaker-08": 0.0174
+        "speaker-08": 0.0174,
+        "speaker-09": 0.0058,
+        "speaker-10": 0.0058,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0057,
+      "characterErrorRate": 0.0068,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
-        "deletions": 5,
-        "insertions": 3,
-        "referenceWords": 1376,
-        "substitutions": 6
+        "deletions": 6,
+        "insertions": 8,
+        "referenceWords": 1892,
+        "substitutions": 7
       },
       "failedUtterances": 0,
       "files": [
@@ -1133,9 +1094,9 @@
         }
       ],
       "id": "whisper-large-v3-turbo",
-      "latencyMaxMs": 281,
+      "latencyMaxMs": 286,
       "latencyMedianMs": 231,
-      "latencyP90Ms": 260,
+      "latencyP90Ms": 259,
       "licence": "MIT",
       "loadSeconds": 0.5,
       "maker": "OpenAI",
@@ -1149,7 +1110,7 @@
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "1.0% word errors"
+          "why": "1.1% word errors"
         },
         {
           "area": "Typical wait",
@@ -1160,7 +1121,7 @@
         },
         {
           "area": "Slow wait",
-          "points": 12.2,
+          "points": 12.3,
           "score": 82,
           "weight": 15,
           "why": "0.26 s for the slowest 1 in 10"
@@ -1170,12 +1131,12 @@
       "sizeGigabytes": 1.62,
       "source": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin",
       "strengths": [
-        "1.0% word errors"
+        "1.1% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
       "withinTarget": 1,
-      "wordErrorRate": 0.0102
+      "wordErrorRate": 0.0111
     },
     {
       "bySpeaker": {
@@ -1186,63 +1147,142 @@
         "speaker-05": 0.0058,
         "speaker-06": 0.0058,
         "speaker-07": 0.0291,
-        "speaker-08": 0.0174
+        "speaker-08": 0.0174,
+        "speaker-09": 0,
+        "speaker-10": 0.0291,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0049,
+      "characterErrorRate": 0.0075,
       "coverage": 100,
       "engine": "python",
       "errors": {
-        "deletions": 5,
-        "insertions": 3,
-        "referenceWords": 1376,
+        "deletions": 6,
+        "insertions": 12,
+        "referenceWords": 1892,
         "substitutions": 4
       },
       "failedUtterances": 0,
       "files": [],
       "id": "musci-asr",
-      "latencyMaxMs": 665,
-      "latencyMedianMs": 177,
-      "latencyP90Ms": 451,
+      "latencyMaxMs": 1434,
+      "latencyMedianMs": 293,
+      "latencyP90Ms": 785,
       "licence": "Apache-2.0",
-      "loadSeconds": 61.8,
+      "loadSeconds": 12.4,
       "maker": "Musci Research",
       "missing": [],
       "mode": "whole utterance",
       "name": "Musci-ASR (Qwen3-ASR fine-tune)",
-      "peakMemoryGigabytes": 5.02,
+      "peakMemoryGigabytes": 5.01,
       "reasons": [
         {
           "area": "Accuracy",
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "0.9% word errors"
+          "why": "1.2% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 15.7,
-          "score": 63,
+          "points": 12,
+          "score": 48,
           "weight": 25,
-          "why": "0.18 s typical wait"
+          "why": "0.29 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 9.5,
-          "score": 63,
+          "points": 6.7,
+          "score": 45,
           "weight": 15,
-          "why": "0.45 s for the slowest 1 in 10"
+          "why": "0.79 s for the slowest 1 in 10"
         }
       ],
-      "score": 85,
+      "score": 79,
       "sizeGigabytes": 0,
       "source": "https://huggingface.co/Musci-research/Musci-ASR-qwen-1019",
       "strengths": [
-        "0.9% word errors"
+        "1.2% word errors"
       ],
       "utterancesWithoutText": 0,
       "weaknesses": [],
-      "withinTarget": 1,
-      "wordErrorRate": 0.0087
+      "withinTarget": 0.982,
+      "wordErrorRate": 0.0116
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0,
+        "speaker-02": 0.0058,
+        "speaker-03": 0.0058,
+        "speaker-04": 0.0116,
+        "speaker-05": 0.0058,
+        "speaker-06": 0,
+        "speaker-07": 0.0291,
+        "speaker-08": 0.0233,
+        "speaker-09": 0,
+        "speaker-10": 0.0349,
+        "speaker-11": 0.0407
+      },
+      "characterErrorRate": 0.0099,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 6,
+        "insertions": 13,
+        "referenceWords": 1892,
+        "substitutions": 8
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 3671972192,
+          "name": "canary-qwen-2.5b-q4_k.gguf",
+          "sha256": "8f9e3a390b8a4b57dfc9df26a07ad5baaa1dba3ca928435120f2befac5574656"
+        }
+      ],
+      "id": "canary-qwen-2.5b",
+      "latencyMaxMs": 1212,
+      "latencyMedianMs": 487,
+      "latencyP90Ms": 820,
+      "licence": "CC-BY-4.0",
+      "loadSeconds": 2.7,
+      "maker": "NVIDIA",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "Canary-Qwen 2.5B",
+      "peakMemoryGigabytes": 3.97,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 60,
+          "score": 100,
+          "weight": 60,
+          "why": "1.4% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 8.3,
+          "score": 33,
+          "weight": 25,
+          "why": "0.49 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 6.5,
+          "score": 43,
+          "weight": 15,
+          "why": "0.82 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 75,
+      "sizeGigabytes": 3.67,
+      "source": "https://huggingface.co/cstr/canary-qwen-2.5b-GGUF/resolve/main/canary-qwen-2.5b-q4_k.gguf",
+      "strengths": [
+        "1.4% word errors"
+      ],
+      "utterancesWithoutText": 4,
+      "weaknesses": [],
+      "withinTarget": 0.968,
+      "wordErrorRate": 0.0143
     },
     {
       "bySpeaker": {
@@ -1253,16 +1293,19 @@
         "speaker-05": 0.0116,
         "speaker-06": 0.0291,
         "speaker-07": 0.0407,
-        "speaker-08": 0.0465
+        "speaker-08": 0.0465,
+        "speaker-09": 0.0233,
+        "speaker-10": 0.0233,
+        "speaker-11": 0.0407
       },
-      "characterErrorRate": 0.0171,
+      "characterErrorRate": 0.0179,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
-        "deletions": 18,
-        "insertions": 4,
-        "referenceWords": 1376,
-        "substitutions": 18
+        "deletions": 22,
+        "insertions": 10,
+        "referenceWords": 1892,
+        "substitutions": 23
       },
       "failedUtterances": 0,
       "files": [
@@ -1273,11 +1316,11 @@
         }
       ],
       "id": "nemotron-3.5-asr-streaming",
-      "latencyMaxMs": 403,
-      "latencyMedianMs": 125,
-      "latencyP90Ms": 243,
+      "latencyMaxMs": 637,
+      "latencyMedianMs": 184,
+      "latencyP90Ms": 386,
       "licence": "OpenMDW-1.1",
-      "loadSeconds": 0.7,
+      "loadSeconds": 1,
       "maker": "NVIDIA",
       "missing": [],
       "mode": "whole utterance",
@@ -1293,26 +1336,26 @@
         },
         {
           "area": "Typical wait",
-          "points": 18.3,
-          "score": 73,
+          "points": 15.4,
+          "score": 62,
           "weight": 25,
-          "why": "0.13 s typical wait"
+          "why": "0.18 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 12.6,
-          "score": 84,
+          "points": 10.3,
+          "score": 68,
           "weight": 15,
-          "why": "0.24 s for the slowest 1 in 10"
+          "why": "0.39 s for the slowest 1 in 10"
         }
       ],
-      "score": 79,
+      "score": 74,
       "sizeGigabytes": 1.29,
       "source": "https://huggingface.co/cstr/nemotron-3.5-asr-streaming-GGUF/resolve/bbd95a9ca5fa0dfca3312a122dfc45a2b578b9c2/nemotron-3.5-asr-streaming-0.6b-f16.gguf",
       "strengths": [
         "2.9% word errors"
       ],
-      "utterancesWithoutText": 2,
+      "utterancesWithoutText": 4,
       "weaknesses": [],
       "withinTarget": 1,
       "wordErrorRate": 0.0291
@@ -1326,16 +1369,19 @@
         "speaker-05": 0.0058,
         "speaker-06": 0.0116,
         "speaker-07": 0.0233,
-        "speaker-08": 0.0174
+        "speaker-08": 0.0174,
+        "speaker-09": 0.0116,
+        "speaker-10": 0.0407,
+        "speaker-11": 0.0407
       },
-      "characterErrorRate": 0.01,
+      "characterErrorRate": 0.014,
       "coverage": 100,
       "engine": "llama-server (realtime)",
       "errors": {
-        "deletions": 13,
-        "insertions": 2,
-        "referenceWords": 1376,
-        "substitutions": 4
+        "deletions": 18,
+        "insertions": 10,
+        "referenceWords": 1892,
+        "substitutions": 7
       },
       "failedUtterances": 0,
       "files": [
@@ -1351,11 +1397,11 @@
         }
       ],
       "id": "lfm3-audio-2b",
-      "latencyMaxMs": 1222,
-      "latencyMedianMs": 609,
-      "latencyP90Ms": 1080,
+      "latencyMaxMs": 1362,
+      "latencyMedianMs": 637,
+      "latencyP90Ms": 1084,
       "licence": "LFM Open",
-      "loadSeconds": 1.1,
+      "loadSeconds": 1.4,
       "maker": "Liquid AI",
       "missing": [],
       "mode": "streaming",
@@ -1367,14 +1413,14 @@
           "points": 60,
           "score": 100,
           "weight": 60,
-          "why": "1.4% word errors"
+          "why": "1.8% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 6.6,
-          "score": 27,
+          "points": 6.3,
+          "score": 25,
           "weight": 25,
-          "why": "0.61 s typical wait"
+          "why": "0.64 s typical wait"
         },
         {
           "area": "Slow wait",
@@ -1384,108 +1430,38 @@
           "why": "1.08 s for the slowest 1 in 10"
         }
       ],
-      "score": 72,
+      "score": 71,
       "sizeGigabytes": 2.15,
       "source": "https://huggingface.co/LiquidAI/LFM3-Audio-2B-GGUF",
       "strengths": [
-        "1.4% word errors"
+        "1.8% word errors"
       ],
-      "utterancesWithoutText": 5,
+      "utterancesWithoutText": 7,
       "weaknesses": [],
-      "withinTarget": 0.848,
-      "wordErrorRate": 0.0138
+      "withinTarget": 0.811,
+      "wordErrorRate": 0.0185
     },
     {
       "bySpeaker": {
-        "speaker-01": 0.0116,
-        "speaker-02": 0.0174,
-        "speaker-03": 0.0233,
-        "speaker-04": 0.0233,
-        "speaker-05": 0.0174,
-        "speaker-06": 0.0291,
-        "speaker-07": 0.0465,
-        "speaker-08": 0.0465
-      },
-      "characterErrorRate": 0.013,
-      "coverage": 100,
-      "engine": "crispasr",
-      "errors": {
-        "deletions": 3,
-        "insertions": 19,
-        "referenceWords": 1376,
-        "substitutions": 15
-      },
-      "failedUtterances": 0,
-      "files": [
-        {
-          "bytes": 190998560,
-          "name": "moonshine-streaming-medium-q4_k.gguf",
-          "sha256": "e40e0f24fa1ae70aa09287b1cda2203811bf8170fa6dcfa0b877060fd6d1450f"
-        }
-      ],
-      "id": "moonshine-streaming-medium",
-      "latencyMaxMs": 5000,
-      "latencyMedianMs": 1052,
-      "latencyP90Ms": 3456,
-      "licence": "MIT",
-      "loadSeconds": 0.1,
-      "maker": "Useful Sensors",
-      "missing": [],
-      "mode": "whole utterance",
-      "name": "Moonshine Streaming Medium",
-      "peakMemoryGigabytes": 0.19,
-      "reasons": [
-        {
-          "area": "Accuracy",
-          "points": 51.2,
-          "score": 85,
-          "weight": 60,
-          "why": "2.7% word errors"
-        },
-        {
-          "area": "Typical wait",
-          "points": 2.6,
-          "score": 10,
-          "weight": 25,
-          "why": "1.05 s typical wait"
-        },
-        {
-          "area": "Slow wait",
-          "points": 0,
-          "score": 0,
-          "weight": 15,
-          "why": "3.46 s for the slowest 1 in 10"
-        }
-      ],
-      "score": 54,
-      "sizeGigabytes": 0.19,
-      "source": "https://huggingface.co/cstr/moonshine-streaming-medium-GGUF/resolve/main/moonshine-streaming-medium-q4_k.gguf",
-      "strengths": [
-        "2.7% word errors"
-      ],
-      "utterancesWithoutText": 0,
-      "weaknesses": [],
-      "withinTarget": 0.468,
-      "wordErrorRate": 0.0269
-    },
-    {
-      "bySpeaker": {
-        "speaker-01": 0.3953,
+        "speaker-01": 0.0058,
         "speaker-02": 0,
         "speaker-03": 0,
         "speaker-04": 0.0058,
         "speaker-05": 0.0058,
-        "speaker-06": 0,
+        "speaker-06": 0.0058,
         "speaker-07": 0.0233,
-        "speaker-08": 0.0116
+        "speaker-08": 0.0058,
+        "speaker-09": 0,
+        "speaker-10": 0.0233,
+        "speaker-11": 0.0291
       },
-      "characterErrorRate": 0.0527,
+      "characterErrorRate": 0.0064,
       "coverage": 100,
       "engine": "llama-server (realtime)",
       "errors": {
-        "deletions": 71,
-        "insertions": 1,
-        "referenceWords": 1376,
+        "deletions": 5,
+        "insertions": 9,
+        "referenceWords": 1892,
         "substitutions": 4
       },
       "failedUtterances": 0,
@@ -1502,11 +1478,11 @@
         }
       ],
       "id": "voxtral-mini-4b-realtime",
-      "latencyMaxMs": 1086,
-      "latencyMedianMs": 816,
-      "latencyP90Ms": 963,
+      "latencyMaxMs": 1102,
+      "latencyMedianMs": 825,
+      "latencyP90Ms": 970,
       "licence": "Apache-2.0",
-      "loadSeconds": 4.7,
+      "loadSeconds": 4.9,
       "maker": "Mistral",
       "missing": [],
       "mode": "streaming",
@@ -1515,14 +1491,14 @@
       "reasons": [
         {
           "area": "Accuracy",
-          "points": 29.8,
-          "score": 50,
+          "points": 60,
+          "score": 100,
           "weight": 60,
-          "why": "5.5% word errors"
+          "why": "1.0% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 4.5,
+          "points": 4.4,
           "score": 18,
           "weight": 25,
           "why": "0.82 s typical wait"
@@ -1532,17 +1508,95 @@
           "points": 5.7,
           "score": 38,
           "weight": 15,
-          "why": "0.96 s for the slowest 1 in 10"
+          "why": "0.97 s for the slowest 1 in 10"
         }
       ],
-      "score": 40,
+      "score": 70,
       "sizeGigabytes": 4.72,
       "source": "https://huggingface.co/ggml-org/Voxtral-Mini-4B-Realtime-2602-GGUF",
-      "strengths": [],
-      "utterancesWithoutText": 8,
+      "strengths": [
+        "1.0% word errors"
+      ],
+      "utterancesWithoutText": 1,
       "weaknesses": [],
-      "withinTarget": 0.899,
-      "wordErrorRate": 0.0552
+      "withinTarget": 0.945,
+      "wordErrorRate": 0.0095
+    },
+    {
+      "bySpeaker": {
+        "speaker-01": 0.0116,
+        "speaker-02": 0.0174,
+        "speaker-03": 0.0233,
+        "speaker-04": 0.0233,
+        "speaker-05": 0.0174,
+        "speaker-06": 0.0291,
+        "speaker-07": 0.0465,
+        "speaker-08": 0.0465,
+        "speaker-09": 0.0523,
+        "speaker-10": 0.0523,
+        "speaker-11": 0.0407
+      },
+      "characterErrorRate": 0.0165,
+      "coverage": 100,
+      "engine": "crispasr",
+      "errors": {
+        "deletions": 3,
+        "insertions": 34,
+        "referenceWords": 1892,
+        "substitutions": 25
+      },
+      "failedUtterances": 0,
+      "files": [
+        {
+          "bytes": 190998560,
+          "name": "moonshine-streaming-medium-q4_k.gguf",
+          "sha256": "e40e0f24fa1ae70aa09287b1cda2203811bf8170fa6dcfa0b877060fd6d1450f"
+        }
+      ],
+      "id": "moonshine-streaming-medium",
+      "latencyMaxMs": 6627,
+      "latencyMedianMs": 1109,
+      "latencyP90Ms": 3529,
+      "licence": "MIT",
+      "loadSeconds": 0.1,
+      "maker": "Useful Sensors",
+      "missing": [],
+      "mode": "whole utterance",
+      "name": "Moonshine Streaming Medium",
+      "peakMemoryGigabytes": 0.19,
+      "reasons": [
+        {
+          "area": "Accuracy",
+          "points": 45.3,
+          "score": 75,
+          "weight": 60,
+          "why": "3.3% word errors"
+        },
+        {
+          "area": "Typical wait",
+          "points": 2.2,
+          "score": 9,
+          "weight": 25,
+          "why": "1.11 s typical wait"
+        },
+        {
+          "area": "Slow wait",
+          "points": 0,
+          "score": 0,
+          "weight": 15,
+          "why": "3.53 s for the slowest 1 in 10"
+        }
+      ],
+      "score": 47,
+      "sizeGigabytes": 0.19,
+      "source": "https://huggingface.co/cstr/moonshine-streaming-medium-GGUF/resolve/main/moonshine-streaming-medium-q4_k.gguf",
+      "strengths": [
+        "3.3% word errors"
+      ],
+      "utterancesWithoutText": 0,
+      "weaknesses": [],
+      "withinTarget": 0.424,
+      "wordErrorRate": 0.0328
     },
     {
       "bySpeaker": {
@@ -1553,16 +1607,19 @@
         "speaker-05": 0.3721,
         "speaker-06": 0.5174,
         "speaker-07": 0.5,
-        "speaker-08": 0.6453
+        "speaker-08": 0.6453,
+        "speaker-09": 0.3953,
+        "speaker-10": 0.3547,
+        "speaker-11": 0.2674
       },
-      "characterErrorRate": 0.3094,
+      "characterErrorRate": 0.2923,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
-        "deletions": 281,
-        "insertions": 9,
-        "referenceWords": 1376,
-        "substitutions": 305
+        "deletions": 357,
+        "insertions": 13,
+        "referenceWords": 1892,
+        "substitutions": 400
       },
       "failedUtterances": 0,
       "files": [
@@ -1573,11 +1630,11 @@
         }
       ],
       "id": "kyutai-stt-1b",
-      "latencyMaxMs": 601,
-      "latencyMedianMs": 183,
-      "latencyP90Ms": 431,
+      "latencyMaxMs": 663,
+      "latencyMedianMs": 196,
+      "latencyP90Ms": 460,
       "licence": "MIT",
-      "loadSeconds": 0.2,
+      "loadSeconds": 0.4,
       "maker": "Kyutai",
       "missing": [],
       "mode": "whole utterance",
@@ -1589,33 +1646,33 @@
           "points": 0,
           "score": 0,
           "weight": 60,
-          "why": "43.2% word errors"
+          "why": "40.7% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 15.5,
-          "score": 62,
+          "points": 15,
+          "score": 60,
           "weight": 25,
-          "why": "0.18 s typical wait"
+          "why": "0.20 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 9.7,
-          "score": 65,
+          "points": 9.4,
+          "score": 63,
           "weight": 15,
-          "why": "0.43 s for the slowest 1 in 10"
+          "why": "0.46 s for the slowest 1 in 10"
         }
       ],
-      "score": 25,
+      "score": 24,
       "sizeGigabytes": 0.67,
       "source": "https://huggingface.co/cstr/kyutai-stt-1b-GGUF/resolve/main/kyutai-stt-1b-q4_k.gguf",
       "strengths": [],
-      "utterancesWithoutText": 25,
+      "utterancesWithoutText": 32,
       "weaknesses": [
-        "43.2% word errors"
+        "40.7% word errors"
       ],
       "withinTarget": 1,
-      "wordErrorRate": 0.4324
+      "wordErrorRate": 0.407
     },
     {
       "bySpeaker": {
@@ -1626,16 +1683,19 @@
         "speaker-05": 0.3256,
         "speaker-06": 0.5233,
         "speaker-07": 0.4826,
-        "speaker-08": 0.6395
+        "speaker-08": 0.6395,
+        "speaker-09": 0.4593,
+        "speaker-10": 0.2616,
+        "speaker-11": 0.186
       },
-      "characterErrorRate": 0.2769,
+      "characterErrorRate": 0.255,
       "coverage": 100,
       "engine": "crispasr",
       "errors": {
-        "deletions": 119,
-        "insertions": 18,
-        "referenceWords": 1376,
-        "substitutions": 403
+        "deletions": 152,
+        "insertions": 35,
+        "referenceWords": 1892,
+        "substitutions": 509
       },
       "failedUtterances": 0,
       "files": [
@@ -1646,11 +1706,11 @@
         }
       ],
       "id": "vibevoice-asr-streaming-1.5b",
-      "latencyMaxMs": 740,
-      "latencyMedianMs": 322,
-      "latencyP90Ms": 509,
+      "latencyMaxMs": 1596,
+      "latencyMedianMs": 367,
+      "latencyP90Ms": 713,
       "licence": "MIT",
-      "loadSeconds": 0.6,
+      "loadSeconds": 1,
       "maker": "Microsoft",
       "missing": [],
       "mode": "whole utterance",
@@ -1662,33 +1722,33 @@
           "points": 0,
           "score": 0,
           "weight": 60,
-          "why": "39.2% word errors"
+          "why": "36.8% word errors"
         },
         {
           "area": "Typical wait",
-          "points": 11.3,
-          "score": 45,
+          "points": 10.3,
+          "score": 41,
           "weight": 25,
-          "why": "0.32 s typical wait"
+          "why": "0.37 s typical wait"
         },
         {
           "area": "Slow wait",
-          "points": 8.9,
-          "score": 59,
+          "points": 7.2,
+          "score": 48,
           "weight": 15,
-          "why": "0.51 s for the slowest 1 in 10"
+          "why": "0.71 s for the slowest 1 in 10"
         }
       ],
-      "score": 20,
+      "score": 17,
       "sizeGigabytes": 1.86,
       "source": "https://huggingface.co/cstr/vibevoice-asr-streaming-1.5b-GGUF/resolve/main/vibevoice-asr-streaming-1.5b-q4_k.gguf",
       "strengths": [],
       "utterancesWithoutText": 0,
       "weaknesses": [
-        "39.2% word errors"
+        "36.8% word errors"
       ],
-      "withinTarget": 1,
-      "wordErrorRate": 0.3924
+      "withinTarget": 0.972,
+      "wordErrorRate": 0.3679
     }
   ]
 }
