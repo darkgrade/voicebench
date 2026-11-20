@@ -250,6 +250,16 @@ function checkCommit(commit: string): Problem[] {
     return /[\w.+-]+@[\w-]+\.[\w.]+|https?:|www\.|\+?\d[\d ().-]{7,}\d/.test(withoutNoReply) ? [`${label}: commit message contains an email, link or phone number`] : []
 }
 
+/** The reviews in the checkout being run from (the newest commit in CI). */
+function latestReviews(): { speaker: string; word: string }[] {
+    try {
+        const list: unknown = JSON.parse(git('show', 'HEAD:recordings/reviewed-speech.json').toString())
+        return Array.isArray(list) ? list.filter(item => typeof item?.speaker === 'string' && typeof item?.word === 'string') : []
+    } catch {
+        return []
+    }
+}
+
 function checkEntries(entries: Entry[], label: string): Problem[] {
     const problems: Problem[] = []
     const json = new Map<string, unknown>()
@@ -287,6 +297,9 @@ function checkEntries(entries: Entry[], label: string): Problem[] {
         problems.push('recordings/reviewed-speech.json: must be a list of { "speaker": "speaker-01", "word": "lowercase" }')
     }
     const reviewed = new Set((Array.isArray(reviewedFile) ? reviewedFile : []).map(item => `${item.speaker} ${item.word}`))
+    // A review holds for history too: a word someone listened to and cleared in a later commit is cleared in the
+    // earlier ones (CI checks every commit, and an old commit's own list can never grow).
+    for (const item of latestReviews()) reviewed.add(`${item.speaker} ${item.word}`)
     const modelFiles = [...json].filter(([path]) => /^results\/models\/[^/]+\.json$/.test(path)).map(([path, value]) => ({ path, value }))
     problems.push(...unscriptedSpeech(modelFiles, reviewed))
     return problems.map(problem => `${label}: ${problem}`)

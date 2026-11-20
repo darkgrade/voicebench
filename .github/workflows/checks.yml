@@ -6,3 +6,6 @@ on:
 jobs:
   checks:
     uses: kevinschaich/kevinschaich/.github/workflows/project.yml@main
+    # Published at darkgrade.com/<bench>/ under Darkgrade's name (AGENTS.md, Approved exceptions).
+    with:
+      own-site: true
