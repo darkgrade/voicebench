@@ -53,5 +53,25 @@
         "id": "speaker-11",
         "file": "speaker-11.wav",
         "publishAudio": true
+    },
+    {
+        "id": "speaker-12",
+        "file": "speaker-12.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-13",
+        "file": "speaker-13.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-14",
+        "file": "speaker-14.wav",
+        "publishAudio": true
+    },
+    {
+        "id": "speaker-15",
+        "file": "speaker-15.wav",
+        "publishAudio": true
     }
 ]
