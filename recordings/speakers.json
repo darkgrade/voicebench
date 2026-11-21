@@ -73,5 +73,10 @@
         "id": "speaker-15",
         "file": "speaker-15.wav",
         "publishAudio": true
+    },
+    {
+        "id": "speaker-16",
+        "file": "speaker-16.wav",
+        "publishAudio": true
     }
 ]
