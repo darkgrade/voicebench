@@ -15,6 +15,12 @@ export const BENCH = {
     origin: 'https://darkgrade.com',
     /** What it is, in search terms: names like Toolbench are shared with academic benchmarks. */
     subject: 'Local speech-to-text benchmark on real voices',
+    /** The results as a schema.org Dataset (scripts/prerender.ts): a fuller description than the tagline, for search. */
+    dataset: {
+        description:
+            "Voicebench by Darkgrade measures how well open speech-to-text models hear real people, and how fast. Volunteers read the same short script of voice assistant requests into their own phones, and every model transcribes every recording locally on the same Mac, one at a time, with its engine's defaults. Accuracy is word error rate against the script; latency is the wait from the end of each line to its final text. Each model gets a 0 to 100 score alongside its download size, memory and licence. Recordings are anonymous and published only with each speaker's agreement.",
+        keywords: ['speech recognition', 'speech-to-text', 'ASR benchmark', 'word error rate', 'transcription latency', 'local AI', 'Whisper', 'real voices'],
+    },
 }
 
 /** The overview's views; each after the first is its own page at BENCH.path + id. */

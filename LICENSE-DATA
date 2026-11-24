@@ -1,0 +1,22 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+The code in this repository is MIT licensed (see LICENSE). The published data is not code and is licensed
+separately, under CC BY 4.0:
+
+- everything in results/
+- everything in recordings/ (the recordings, their utterance cuts, speakers.json and reviewed-speech.json)
+- the same results as published on the site, at https://darkgrade.com/voicebench/data/voicebench.json
+
+A speaker's recording is published here only with that speaker's agreement, and only in anonymous form
+(speaker-NN). Recordings of speakers who have not agreed are never committed and are not covered by this
+license.
+
+You may share and adapt the data for any purpose, including commercially, as long as you give appropriate
+credit, link to the license and say if you changed it. Credit it as:
+
+    Voicebench by Darkgrade (https://darkgrade.com/voicebench/), CC BY 4.0
+
+Copyright (c) 2026 Darkgrade
+
+License: https://creativecommons.org/licenses/by/4.0/
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
